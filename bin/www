@@ -88,3 +88,14 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+let db = require('../models');
+db.sequelize.sync().then(function () {
+  console.log('db synced');
+  app.listen(port, function () {
+    console.log('Express server listening on port ');
+  });
+})
+  .catch((err) => {
+    console.log(err);
+  })
