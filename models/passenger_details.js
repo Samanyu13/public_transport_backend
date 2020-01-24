@@ -22,15 +22,5 @@ module.exports = function (sequelize, DataTypes) {
             },
         });
 
-    PassengerDetails.associate = function (models) {
-        models.passenger_details
-            .belongsTo(models.passenger_credentials, {
-                onDelete: 'CASCADE',
-                foreignKey: {
-                    name: 'id',
-                },
-            });
-    };
-
     return PassengerDetails;
 };

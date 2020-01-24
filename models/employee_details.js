@@ -1,13 +1,9 @@
 module.exports = function (sequelize, DataTypes) {
     const EmployeeDetails = sequelize
         .define('employee_details', {
-            id: {
-                type: DataTypes.INTEGER(),
-                primaryKey: true,
-                autoIncrement: true,
-            },
             employee_id: {
                 type: DataTypes.STRING(10),
+                primaryKey: true,
                 allowNull: false,
                 unique: true,
             },
@@ -22,15 +18,7 @@ module.exports = function (sequelize, DataTypes) {
             },
         });
 
-    EmployeeDetails.associate = function (models) {
-        models.employee_details
-            .belongsTo(models.employee_credentials, {
-                onDelete: 'CASCADE',
-                foreignKey: {
-                    name: 'employee_id',
-                },
-            });
-    };
+
 
     return EmployeeDetails;
 };

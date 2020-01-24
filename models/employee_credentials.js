@@ -16,5 +16,15 @@ module.exports = function (sequelize, DataTypes) {
             },
         });
 
+    EmployeeCredentials.associate = function (models) {
+        models.employee_credentials
+            .belongsTo(models.employee_details, {
+                onDelete: 'CASCADE',
+                foreignKey: {
+                    name: 'employee_id',
+                },
+            });
+    };
+
     return EmployeeCredentials;
 };

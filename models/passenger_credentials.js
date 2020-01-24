@@ -4,7 +4,6 @@ module.exports = function (sequelize, DataTypes) {
             id: {
                 type: DataTypes.INTEGER(),
                 primaryKey: true,
-                autoIncrement: true,
             },
             email: {
                 type: DataTypes.STRING(40),
@@ -16,6 +15,16 @@ module.exports = function (sequelize, DataTypes) {
                 allowNull: false,
             },
         });
+
+        PassengerCredentials.associate = function (models) {
+        models.passenger_credentials
+            .belongsTo(models.passenger_details, {
+                onDelete: 'CASCADE',
+                foreignKey: {
+                    name: 'id',
+                },
+            });
+    };
 
     return PassengerCredentials;
 };
