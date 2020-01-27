@@ -6,18 +6,30 @@ module.exports = function (sequelize, DataTypes) {
                 primaryKey: true,
                 autoIncrement: true,
             },
-            passenger_id: {
-                type: DataTypes.INTEGER(),
-                allowNull: false,
-                unique: true,
-            },
+            // passenger_id: {
+            //     type: DataTypes.INTEGER(),
+            //     allowNull: false,
+            //     unique: true,
+            // },
             mobile_number: {
                 type: DataTypes.STRING(13),
                 allowNull: false,
                 unique: true,
             },
-            address: {
-                type: DataTypes.STRING(50),
+            // address: {
+            //     type: DataTypes.STRING(50),
+            //     allowNull: false,
+            // },
+            first_name: {
+                type: DataTypes.STRING(20),
+                allowNull: false,
+            },
+            last_name: {
+                type: DataTypes.STRING(20),
+                allowNull: false,
+            },
+            username: {
+                type: DataTypes.STRING(20),
                 allowNull: false,
             },
         });
