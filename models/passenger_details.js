@@ -32,6 +32,10 @@ module.exports = function (sequelize, DataTypes) {
                 type: DataTypes.STRING(20),
                 allowNull: false,
             },
+            verified: {
+                type: DataTypes.BOOLEAN(),
+                allowNull: false,
+            },
         });
 
     return PassengerDetails;

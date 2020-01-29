@@ -7,28 +7,36 @@ const { sequelize } = require('./../../models');
 let Authentication = {};
 
 Authentication.addUser = async function (req, res) {
+    console.log(req);
     try {
-        let info = req.info;
-        bcrypt.hash(info.password, saltRounds, function (err, hash) {
-            let seq = await sequelize.transaction(function (t) {
-                let details = {};
-                let credentials = {};
-                details.passenger_id = info.passengerID;
-                details.mobile_number = info.mobileNo;
-                details.address = info.address;
-
-                people = await models.passenger_details
-                    .create(details, {
-                        transaction: t
-                    });
-
+        let info = req;
+        const hashedPassword = await new Promise((resolve,reject) => {
+            bcrypt.hash(info.password,saltRounds,function(err, hash){
+                if(err)
+                    reject(err);
+                resolve(hash);
             });
-            console.log(toString(people));
-            return {
-                'status': 200,
-                'success': true
-            };
         });
+        let seq = await sequelize.transaction( async function (t) {
+        let details = {};
+        let credentials = {};
+        details.first_name = info.first_name;
+        details.last_name = info.last_name;
+        details.mobile_number = info.mobile_number;
+        details.username = info.username;
+        details.verified = false;
+
+        people = await models.passenger_details
+            .create(details, {
+                transaction: t
+            });
+        });
+        // console.log("XXX" + (people.username));
+
+        return {
+            'status': 200,
+            'success': true
+        };
     } catch (err) {
         console.log(err);
         return {
@@ -36,5 +44,6 @@ Authentication.addUser = async function (req, res) {
             'err': err
         }
     }
-
 }
+
+module.exports = Authentication;
