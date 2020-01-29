@@ -1,2 +1,7 @@
 node_modules/
+
 config/
+
+methods/mail/credentials.json
+
+methods/mail/token.json
