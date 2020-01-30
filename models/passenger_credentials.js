@@ -23,6 +23,7 @@ module.exports = function (sequelize, DataTypes) {
                 foreignKey: {
                     name: 'id',
                 },
+                hooks: true
             });
     };
 
