@@ -7,7 +7,6 @@ const { sequelize } = require('./../../models');
 let User = {};
 
 User.addUser = async function (req, res) {
-    console.log(req);
     try {
         let info = req;
         let hash;
@@ -15,13 +14,13 @@ User.addUser = async function (req, res) {
 
         let seq = await sequelize.transaction(async function (t) {
             let details = {};
-            let credentials = {};
             details.first_name = info.first_name;
             details.last_name = info.last_name;
             details.mobile_number = info.mobile_number;
             details.username = info.username;
             details.verified = false;
 
+            let credentials = {};
             credentials.email = info.email;
             credentials.password = hash;
 
@@ -35,31 +34,100 @@ User.addUser = async function (req, res) {
                 .create(credentials, {
                     transaction: t
                 });
-            console.log("XXX" + credentials);
 
+            let confirmData = {};
+            confirmData.id = people_details.id;
+            confirmData.otp = info.otp;
 
+            people_confirm = await models.confirm_user
+                .create(confirmData, { transaction: t });
         });
 
 
         return {
-            'about': "Success..!",
+            'about': "Successfully added the user to db and sent mail",
             'status': 200,
             'success': true,
         };
     } catch (err) {
-        let status, about;
-
-        about = err;
-        status = 100;
-        if (err == 'SequelizeUniqueConstraintError') {
-            // about = "Duplicate insertion of values...!";
-            status = 111;
-        }
         return {
-            'about': about,
-            'status': status,
+            'about': err,
+            'status': 500,
             'success': false
         }
+    }
+}
+
+User.verifyUser = async function (req, res) {
+    try {
+        //time to wait for otp in minutes
+        let MIN = 15;
+        let info = req;
+
+        let details = await models.confirm_user.findOne({
+            where: {
+                id: info.id
+            }
+        });
+        if (details == null) {
+            return {
+                'about': "The otp is currently invalid/user not found  :/",
+                'status': 404,
+                'success': false
+            }
+        }
+        var date1 = new Date(details.createdAt);
+        var date2 = new Date(req.timestamp);
+        let recTIME = Math.floor((date2.getTime() - date1.getTime()) / 1000);
+        let oriTIME = MIN * 60;
+
+        //check for timeout 
+        if (oriTIME > recTIME) {
+            if (details.otp == info.otp) {
+                let test = await models.passenger_details.update({
+                    verified: true
+                }, {
+                    where: {
+                        id: info.id,
+                    },
+                });
+
+                return {
+                    'about': "Success..! User verified..!",
+                    'status': 200,
+                    'success': true
+                }
+            }
+            else {
+                return {
+                    'about': "Oops..! Wrong OTP..:|",
+                    'status': 400,
+                    'success': true
+                }
+            }
+        }
+        else {
+            return {
+                'about': "Timeout..!",
+                'status': 408,
+                'success': false
+            }
+        }
+    }
+    catch (err) {
+        console.log("Error: " + err);
+        return {
+            'about': err,
+            'status': 500,
+            'success': false
+        }
+    }
+    finally {
+        let x = await models.confirm_user.destroy({
+            where: {
+                id: req.id
+            }
+        });
     }
 }
 

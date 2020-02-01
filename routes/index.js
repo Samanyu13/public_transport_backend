@@ -5,9 +5,11 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
-
+//auth
 router.use('/auth', require('./auth'));
+//private
 router.use('/private', require('./private'));
+//common
 router.use('/common', require('./common'));
 
 module.exports = router;

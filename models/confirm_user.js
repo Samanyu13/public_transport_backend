@@ -1,23 +1,19 @@
 module.exports = function (sequelize, DataTypes) {
-    const PassengerCredentials = sequelize
-        .define('passenger_credentials', {
+    const ConfirmUser = sequelize
+        .define('confirm_user', {
             id: {
                 type: DataTypes.INTEGER(),
                 primaryKey: true,
             },
-            email: {
-                type: DataTypes.STRING(40),
+            otp: {
+                type: DataTypes.STRING(10),
                 allowNull: false,
                 unique: true,
-            },
-            password: {
-                type: DataTypes.STRING(500),
-                allowNull: false,
-            },
+            }
         });
 
-        PassengerCredentials.associate = function (models) {
-        models.passenger_credentials
+        ConfirmUser.associate = function (models) {
+        models.confirm_user
             .belongsTo(models.passenger_details, {
                 onDelete: 'CASCADE',
                 foreignKey: {
@@ -26,5 +22,5 @@ module.exports = function (sequelize, DataTypes) {
             });
     };
 
-    return PassengerCredentials;
+    return ConfirmUser;
 };

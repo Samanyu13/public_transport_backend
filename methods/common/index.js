@@ -9,8 +9,11 @@ Common.deleteEmAll = async function (req, res) {
         let emp_det = await models.employee_details.destroy({
             where: {}
         });
+        let conf = await models.confirm_user.destroy({
+            where: {}
+        });
         return {
-            'about': "Success..!",
+            'about': "All the tables deleted..!",
             'status': 200,
             'success': true
         }
@@ -19,7 +22,7 @@ Common.deleteEmAll = async function (req, res) {
         console.log("Error: " + err);
         return {
             'about': "Delete unsuccessful..!",
-            'status': 100,
+            'status': 500,
             'success': false
         }
     }
@@ -40,8 +43,8 @@ Common.deleteAllUsers = async function (req, res) {
     catch (err) {
         console.log("Error: " + err);
         return {
-            'about': "Delete unsuccessful..!",
-            'status': 100,
+            'about': "Delete unsuccessful..! (at methods)",
+            'status': 500,
             'success': false
         }
     }

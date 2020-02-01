@@ -35,6 +35,7 @@ function sendMail(info, auth, cb) {
 
   var email_lines = [];
 
+
   email_lines.push('From: "I-Love-KSRTC" <iloveksrtc@gmail.com>');
   email_lines.push('To: ' + info.email);
   email_lines.push('Content-type: text/html;charset=iso-8859-1');
@@ -42,7 +43,7 @@ function sendMail(info, auth, cb) {
   email_lines.push('Subject: KSRTC App - Confirmation');
   email_lines.push('');
   email_lines.push('Dear ' + info.username + ',<br/><br/>');
-  email_lines.push('Your OTP for KSRTC app is <b>' + info.password + '</b>. Enter this onto the prompt for confirmation. Cheers..!');
+  email_lines.push('Your OTP for KSRTC app is <b>' + info.otp + '</b>. Enter this onto the prompt for confirmation. Cheers..!');
 
   var email = email_lines.join('\r\n').trim();
 
