@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const methods = require('./../../methods');
 
-//auth/user/reqister
+//auth/user/register
 router.post('/register', async (req, res) => {
     try {
         let data = JSON.stringify(req.body);
@@ -12,8 +12,6 @@ router.post('/register', async (req, res) => {
         //now elements can be easily retrieved from the json 'data'
         let info = {};
         info.username = data.userName;
-        info.first_name = data.firstName;
-        info.last_name = data.lastName;
         info.mobile_number = data.mobileNo;
         info.password = data.password;
         info.email = data.email;
@@ -68,6 +66,34 @@ router.post('/verify', async (req, res) => {
         info.timestamp = data.timestamp;
 
         let conf = await methods.Authentication.User.verifyUser(info);
+
+        res.json({
+            'success': conf.success,
+            'about': conf.about,
+            'status': conf.status
+        });
+    }
+    catch (err) {
+        console.log("Error: " + err);
+        res.json({
+            'success': false,
+            'about': err,
+            'status': 500
+        });
+    }
+});
+
+//auth/user/login
+router.post('/login', async (req, res) => {
+    try {
+        let data = JSON.stringify(req.body);
+        data = JSON.parse(data);
+
+        let info = {};
+        info.email = data.email;
+        info.password = data.password;
+
+        let conf = await methods.Authentication.User.AuthenticateUser(info);
 
         res.json({
             'success': conf.success,

@@ -11,14 +11,6 @@ module.exports = function (sequelize, DataTypes) {
                 allowNull: false,
                 unique: true,
             },
-            first_name: {
-                type: DataTypes.STRING(20),
-                allowNull: false,
-            },
-            last_name: {
-                type: DataTypes.STRING(20),
-                allowNull: false,
-            },
             username: {
                 type: DataTypes.STRING(20),
                 allowNull: false,

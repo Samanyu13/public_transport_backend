@@ -14,8 +14,6 @@ User.addUser = async function (req, res) {
 
         let seq = await sequelize.transaction(async function (t) {
             let details = {};
-            details.first_name = info.first_name;
-            details.last_name = info.last_name;
             details.mobile_number = info.mobile_number;
             details.username = info.username;
             details.verified = false;
@@ -69,6 +67,8 @@ User.verifyUser = async function (req, res) {
                 id: info.id
             }
         });
+
+        //user not found
         if (details == null) {
             return {
                 'about': "The otp is currently invalid/user not found  :/",
@@ -128,6 +128,79 @@ User.verifyUser = async function (req, res) {
                 id: req.id
             }
         });
+    }
+}
+
+User.AuthenticateUser = async function (req, res) {
+    try {
+        let credentials = await models.passenger_credentials.findOne({
+            where: {
+                email: req.email
+            }
+        });
+
+        //user not found
+        if (credentials == null) {
+            return {
+                'about': "Invalid mail-ID :/",
+                'status': 404,
+                'success': false
+            }
+        }
+
+
+        const match = await bcrypt.compare(req.password, credentials.password);
+
+        //login successful
+        if (match) {
+            console.log("Password validation successful..!");
+
+            let details = await models.passenger_details.findOne({
+                where: {
+                    id: credentials.id
+                }
+            });
+
+            //user details not found
+            if (details == null) {
+                return {
+                    'about': "The user_details not found.. That's unlikely :/",
+                    'status': 404,
+                    'success': false
+                }
+            }
+
+            //success..!
+            const token = jwt.sign({
+                id: details.id,
+                email: details.email,
+                mobile_number: details.mobile_number
+            }, api_sec, {
+                expiresIn: "1h"
+            });
+
+            return {
+                'about': token,
+                'status': 200,
+                'success': true
+            }
+        }
+        else {
+            console.log("Error: " + err);
+            return {
+                'about': "Invalid password..! :(",
+                'status': 400,
+                'success': false
+            }
+        }
+    }
+    catch (err) {
+        console.log("Error: " + err);
+        return {
+            'about': err,
+            'status': 500,
+            'success': false
+        }
     }
 }
 
