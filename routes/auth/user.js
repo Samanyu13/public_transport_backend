@@ -66,7 +66,7 @@ router.post('/verify', async (req, res) => {
         info.timestamp = data.timestamp;
 
         let conf = await methods.Authentication.User.verifyUser(info);
-
+        console.log("XXX" + conf);
         res.json({
             'success': conf.success,
             'about': conf.about,

@@ -43,7 +43,7 @@ User.addUser = async function (req, res) {
 
 
         return {
-            'about': "Successfully added the user to db and sent mail",
+            'about': people_details.id,
             'status': 200,
             'success': true,
         };
