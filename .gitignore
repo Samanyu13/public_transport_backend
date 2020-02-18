@@ -2,6 +2,8 @@ node_modules/
 
 config/
 
+public/sheets/
+
 methods/mail/credentials.json
 
 methods/mail/token.json
