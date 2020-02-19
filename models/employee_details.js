@@ -12,8 +12,12 @@ module.exports = function (sequelize, DataTypes) {
                 allowNull: false,
                 unique: true,
             },
-            address: {
-                type: DataTypes.STRING(50),
+            username: {
+                type: DataTypes.STRING(20),
+                allowNull: false,
+            },
+            verified: {
+                type: DataTypes.BOOLEAN(),
                 allowNull: false,
             },
         });
