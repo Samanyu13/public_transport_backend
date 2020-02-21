@@ -1,13 +1,13 @@
 module.exports = function (sequelize, DataTypes) {
     const BusstopMaster = sequelize
         .define('busstop_master', {
-            id: {
+            busstop_id: {
                 type: DataTypes.STRING(10),
                 allowNull: false,
                 primaryKey: true,
             },
             busstop: {
-                type: DataTypes.STRING(40),
+                type: DataTypes.STRING(100),
                 allowNull: false,
             },
         });

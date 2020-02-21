@@ -1,13 +1,13 @@
 module.exports = function (sequelize, DataTypes) {
     const RouteMaster = sequelize
         .define('route_master', {
-            id: {
+            route_id: {
                 type: DataTypes.STRING(10),
                 allowNull: false,
                 primaryKey: true,
             },
             route_name: {
-                type: DataTypes.STRING(40),
+                type: DataTypes.STRING(100),
                 allowNull: false,
             },
         });

@@ -2,7 +2,7 @@ node_modules/
 
 config/
 
-public/sheets/
+methods/route_details/sheets/
 
 methods/mail/credentials.json
 
