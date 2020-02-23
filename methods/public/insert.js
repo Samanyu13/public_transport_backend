@@ -27,6 +27,7 @@ InsertDataFromCSV.addBusMaster = async function () {
         }
     }
     catch (err) {
+        console.log("Error-Methods: " + err);
         return {
             'about': err,
             'status': 500,
@@ -54,6 +55,7 @@ InsertDataFromCSV.addRouteMaster = async function () {
         }
     }
     catch (err) {
+        console.log("Error-Methods: " + err);
         return {
             'about': err,
             'status': 500,
@@ -81,6 +83,7 @@ InsertDataFromCSV.addRouteDetails = async function () {
         }
     }
     catch (err) {
+        console.log("Error-Methods: " + err);
         return {
             'about': err,
             'status': 500,

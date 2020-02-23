@@ -19,7 +19,7 @@ Common.deleteEmAll = async function (req, res) {
         }
     }
     catch (err) {
-        console.log("Error: " + err);
+        console.log("Error-Methods: " + err);
         return {
             'about': "Delete unsuccessful..!",
             'status': 500,
@@ -41,7 +41,7 @@ Common.deleteAllUsers = async function (req, res) {
         }
     }
     catch (err) {
-        console.log("Error: " + err);
+        console.log("Error-Methods: " + err);
         return {
             'about': "Delete unsuccessful..! (at methods)",
             'status': 500,

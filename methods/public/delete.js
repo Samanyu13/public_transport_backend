@@ -9,7 +9,7 @@ DeleteDataFromCSV.clearBusMaster = async function () {
         let result = await models.busstop_master.destroy({
             where: {}
         });
-        console.log(result + "XXX");
+        console.log(result + " rows deleted from BusMaster..!");
 
         return {
             'about': "Successfully cleared BusMaster..!",
@@ -18,7 +18,7 @@ DeleteDataFromCSV.clearBusMaster = async function () {
         }
     }
     catch (err) {
-        console.log("Method:" + err);
+        console.log("Error-Methods: " + err);
         return {
             'about': err,
             'status': 500,
@@ -32,6 +32,7 @@ DeleteDataFromCSV.clearRouteMaster = async function () {
         let result = await models.route_master.destroy({
             where: {}
         });
+        console.log(result + " rows deleted from RouteMaster..!");
 
         return {
             'about': "Successfully cleared RouteMaster..!",
@@ -40,6 +41,7 @@ DeleteDataFromCSV.clearRouteMaster = async function () {
         }
     }
     catch (err) {
+        console.log("Error-Methods: " + err);
         return {
             'about': err,
             'status': 500,
@@ -53,6 +55,7 @@ DeleteDataFromCSV.clearRouteDetails = async function () {
         let result = await models.route_details.destroy({
             where: {}
         });
+        console.log(result + " rows deleted from RouteDetails..!");
 
         return {
             'about': "Successfully cleared RouteDetails..!",
@@ -61,6 +64,7 @@ DeleteDataFromCSV.clearRouteDetails = async function () {
         }
     }
     catch (err) {
+        console.log("Error-Methods: " + err);
         return {
             'about': err,
             'status': 500,

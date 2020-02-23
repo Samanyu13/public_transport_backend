@@ -13,7 +13,7 @@ router.post('/addBusMaster', async (req, res) => {
         });
     }
     catch(err) {
-        console.log("Error: " + err);
+        console.log("Error-Routes: " + err);
         res.json({
             'success': false,
             'about': err,
@@ -34,7 +34,7 @@ router.post('/clearBusMaster', async (req, res) => {
         });
     }
     catch(err) {
-        console.log("Error: " + err);
+        console.log("Error-Routes: " + err);
         res.json({
             'success': false,
             'about': err,
@@ -54,7 +54,7 @@ router.post('/addRouteMaster', async (req, res) => {
         });
     }
     catch(err) {
-        console.log("Error: " + err);
+        console.log("Error-Routes: " + err);
         res.json({
             'success': false,
             'about': err,
@@ -75,7 +75,7 @@ router.post('/clearRouteMaster', async (req, res) => {
         });
     }
     catch(err) {
-        console.log("Error: " + err);
+        console.log("Error-Routes: " + err);
         res.json({
             'success': false,
             'about': err,
@@ -95,7 +95,7 @@ router.post('/addRouteDetails', async (req, res) => {
         });
     }
     catch(err) {
-        console.log("Error: " + err);
+        console.log("Error-Routes: " + err);
         res.json({
             'success': false,
             'about': err,
@@ -116,7 +116,7 @@ router.post('/clearRouteDetails', async (req, res) => {
         });
     }
     catch(err) {
-        console.log("Error: " + err);
+        console.log("Error-Routes: " + err);
         res.json({
             'success': false,
             'about': err,
@@ -126,12 +126,14 @@ router.post('/clearRouteDetails', async (req, res) => {
 });
 
 //public/dbEntry/addAllDetails
+/*
 router.post('/addAllDetails', async (req, res) => {
     try {
         let result1 = await methods.Public.InsertDataFromCSV.addBusMaster();
         let result2 = await methods.Public.InsertDataFromCSV.addRouteMaster();
-        let result3 = await methods.Public.InsertDataFromCSV.addRouteDetails();
-
+        if(result1.success && result2.success) {
+            let result3 = await methods.Public.InsertDataFromCSV.addRouteDetails();
+        }
         res.json({
             'success': true,
             'about': "Successfully entered all data tables..!",
@@ -139,7 +141,7 @@ router.post('/addAllDetails', async (req, res) => {
         });
     }
     catch(err) {
-        console.log("Error: " + err);
+        console.log("Error-Routes: " + err);
         res.json({
             'success': false,
             'about': err,
@@ -147,6 +149,7 @@ router.post('/addAllDetails', async (req, res) => {
         });
     }
 });
+*/
 
 //public/dbEntry/clearAllDetails
 router.post('/clearAllDetails', async (req, res) => {
@@ -154,7 +157,6 @@ router.post('/clearAllDetails', async (req, res) => {
         let result1 = await methods.Public.DeleteDataFromCSV.clearBusMaster();
         let result2 = await methods.Public.DeleteDataFromCSV.clearRouteMaster();
 
-        console.log("Route: " + result.about);
         res.json({
             'success': true,
             'about': "Successfully cleared all data",
@@ -162,7 +164,7 @@ router.post('/clearAllDetails', async (req, res) => {
         });
     }
     catch(err) {
-        console.log("Error: " + err);
+        console.log("Error-Routes: " + err);
         res.json({
             'success': false,
             'about': err,

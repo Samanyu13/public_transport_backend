@@ -48,6 +48,7 @@ User.addUser = async function (req, res) {
             'success': true,
         };
     } catch (err) {
+        console.log("Error-Methods: " + err);
         return {
             'about': err,
             'status': 500,
@@ -115,7 +116,7 @@ User.verifyUser = async function (req, res) {
         }
     }
     catch (err) {
-        console.log("Error: " + err);
+        console.log("Error-Methods: " + err);
         return {
             'about': err,
             'status': 500,
@@ -195,7 +196,7 @@ User.AuthenticateUser = async function (req, res) {
         }
     }
     catch (err) {
-        console.log("Error: " + err);
+        console.log("Error-Methods: " + err);
         return {
             'about': err,
             'status': 500,
