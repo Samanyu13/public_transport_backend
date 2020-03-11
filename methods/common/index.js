@@ -9,9 +9,6 @@ Common.deleteEmAll = async function (req, res) {
         let emp_det = await models.employee_details.destroy({
             where: {}
         });
-        let conf = await models.confirm_user.destroy({
-            where: {}
-        });
         return {
             'about': "All the tables deleted..!",
             'status': 200,

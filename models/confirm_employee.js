@@ -1,7 +1,7 @@
 module.exports = function (sequelize, DataTypes) {
     const ConfirmEmployee = sequelize
         .define('confirm_employee', {
-            id: {
+            employee_id: {
                 type: DataTypes.STRING(10),
                 primaryKey: true,
             },
@@ -17,7 +17,7 @@ module.exports = function (sequelize, DataTypes) {
             .belongsTo(models.employee_details, {
                 onDelete: 'CASCADE',
                 foreignKey: {
-                    name: 'id',
+                    name: 'employee_id',
                 },
             });
     };
