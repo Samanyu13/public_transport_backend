@@ -3,9 +3,9 @@ const methods = require('./../../methods');
 const router = express.Router();
 
 
-router.post('/deleteAll', async (req, res) => {
+router.post('/deleteAllPeopleData', async (req, res) => {
     try {
-        let result = await methods.Common.deleteEmAll();
+        let result = await methods.Common.deleteAllPeopleData();
 
             res.json({
                 'success': result.success,
@@ -21,6 +21,6 @@ router.post('/deleteAll', async (req, res) => {
             'status': 500
         });
     }
-})
+});
 
 module.exports = router;

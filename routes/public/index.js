@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 
+//public/dbEntry/
 router.use('/dbEntry', require('./db_entry'));
-router.use('/employee', require('./employee'));
 
 module.exports = router;

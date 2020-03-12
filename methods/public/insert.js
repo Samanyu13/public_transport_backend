@@ -15,9 +15,7 @@ InsertDataFromCSV.addBusMaster = async function () {
             .pipe(csv())
             .on('data', (data) => obj.push(data))
             .on('end', async () => {
-                for (let i = 0; i < obj.length; i++) {
-                    let busMaster = await models.busstop_master.create(obj[i]);
-                }
+                let busMaster = await models.busstop_master.bulkCreate(obj);
             });
 
         return {
@@ -43,9 +41,7 @@ InsertDataFromCSV.addRouteMaster = async function () {
             .pipe(csv())
             .on('data', (data) => obj.push(data))
             .on('end', async () => {
-                for (let i = 0; i < obj.length; i++) {
-                    let routeMaster = await models.route_master.create(obj[i]);
-                }
+                let routeMaster = await models.route_master.bulkCreate(obj);
             });
 
         return {
@@ -71,9 +67,7 @@ InsertDataFromCSV.addRouteDetails = async function () {
             .pipe(csv())
             .on('data', (data) => obj.push(data))
             .on('end', async () => {
-                for (let i = 0; i < obj.length; i++) {
-                    let routeDetails = await models.route_details.create(obj[i]);
-                }
+                let routeDetails = await models.route_details.bulkCreate(obj);
             });
 
         return {
