@@ -40,7 +40,7 @@ router.post('/register', async (req, res) => {
 
         res.json({
             'success': result.success,
-            'about': result.about,
+            'about': { 'data': null, 'comment': result.about },
             'status': result.status
         });
     }
@@ -48,7 +48,7 @@ router.post('/register', async (req, res) => {
         console.log('Error: ' + err);
         res.json({
             'success': false,
-            'about': err,
+            'about': { 'data': null, 'comment': err },
             'status': 500
         });
     }
@@ -69,7 +69,7 @@ router.post('/verify', async (req, res) => {
         console.log("XXX" + conf);
         res.json({
             'success': conf.success,
-            'about': conf.about,
+            'about': { 'data': null, 'comment': conf.about },
             'status': conf.status
         });
     }
@@ -77,7 +77,7 @@ router.post('/verify', async (req, res) => {
         console.log("Error: " + err);
         res.json({
             'success': false,
-            'about': err,
+            'about': { 'data': null, 'comment': err },
             'status': 500
         });
     }
@@ -97,7 +97,7 @@ router.post('/login', async (req, res) => {
 
         res.json({
             'success': conf.success,
-            'about': conf.about,
+            'about': { 'data': null, 'comment': conf.about },
             'status': conf.status
         });
     }
@@ -105,7 +105,7 @@ router.post('/login', async (req, res) => {
         console.log("Error: " + err);
         res.json({
             'success': false,
-            'about': err,
+            'about': { 'data': null, 'comment': err },
             'status': 500
         });
     }

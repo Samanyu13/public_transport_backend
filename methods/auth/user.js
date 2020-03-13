@@ -6,6 +6,11 @@ const api_sec = require('./../../config/api.json').API_SECRET;
 const { sequelize } = require('./../../models');
 let User = {};
 
+/**
+ * Adds the newly registered user to the database.
+ * Required set of inputs include --> mobile_number, 
+ * username, email, and password 
+ */
 User.addUser = async function (req, res) {
     try {
         let info = req;
@@ -57,6 +62,11 @@ User.addUser = async function (req, res) {
     }
 }
 
+/**
+ * Verification of the user's account happens here.
+ * Required set of inputs include id(of the user), 
+ * otp and timestamp. 
+ */
 User.verifyUser = async function (req, res) {
     try {
         //time to wait for otp in minutes
@@ -132,6 +142,11 @@ User.verifyUser = async function (req, res) {
     }
 }
 
+/**
+ * Authenticates the user. Upon proper authentication, 
+ * the user is provided with jsonwebtoken as part of
+ * authorisation needs. Takes in email and password as the inputs.
+ */
 User.AuthenticateUser = async function (req, res) {
     try {
         let credentials = await models.passenger_credentials.findOne({

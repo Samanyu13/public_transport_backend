@@ -6,6 +6,11 @@ const api_sec = require('./../../config/api.json').API_SECRET;
 const { sequelize } = require('./../../models');
 let Employee = {};
 
+/**
+ * Adds the newly registered employee to the database.
+ * Required set of inputs include --> mobile_number, 
+ * username, employee_id, email, and password 
+ */
 Employee.addEmployee = async function (req, res) {
     try {
         let info = req;
@@ -57,6 +62,11 @@ Employee.addEmployee = async function (req, res) {
     }
 }
 
+/**
+ * Verification of the employee's account happens here.
+ * Required set of inputs include employee_id, 
+ * otp and timestamp. 
+ */
 Employee.verifyEmployee = async function (req, res) {
     try {
         //time to wait for otp in minutes
@@ -132,6 +142,11 @@ Employee.verifyEmployee = async function (req, res) {
     }
 }
 
+/**
+ * Authenticates the employee. Upon proper authentication, 
+ * the employee is provided with jsonwebtoken as part of
+ * authorisation needs. Takes in email and password as the inputs.
+ */
 Employee.AuthenticateEmployee = async function (req, res) {
     try {
         let credentials = await models.employee_credentials.findOne({
