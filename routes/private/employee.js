@@ -3,10 +3,11 @@ const router = express.Router();
 const methods = require('./../../methods');
 const auth = require('./../../middleware/auth');
 
-//private/employee/startBus
-router.post('/startBus', async function (req, res) {
+//private/employee/startTrip
+router.post('/startTrip', auth.jwtVerifyToken, async function (req, res) {
     try {
         let data = JSON.stringify(req.body);
+        //req.decoded - details
         data = JSON.parse(data);
         let info = {};
         info.busNo = data.busNo;
@@ -70,6 +71,46 @@ router.post('/startBus', async function (req, res) {
             'status': status
         });
 
+    }
+    catch (err) {
+        console.log("Route-Error: " + err);
+
+        res.json({
+            'success': false,
+            'about': { 'data': null, 'comment': err },
+            'status': 500
+        });
+    }
+})
+
+//private/employee/endTrip
+router.post('/endTrip', auth.jwtVerifyToken, async function (req, res) {
+    try {
+        let data = JSON.stringify(req.body);
+        //req.decoded - details
+        data = JSON.parse(data);
+        let info = data.employeeCode;
+
+        let live = await methods.BusInfo.getLiveBusByEmpID(info);
+        console.log("LIVE: " + live.about);
+
+        if (live.success) {
+            let bus = live.about;
+            let del = await methods.BusInfo.removeFromLiveAndAddToLog(bus);
+
+            res.json({
+                'success': del.success,
+                'about': { 'data': null, 'comment': del.about },
+                'status': del.status
+            });
+        }
+        else {
+            res.json({
+                'success': live.success,
+                'about': { 'data': null, 'comment': live.about },
+                'status': live.status
+            });
+        }
     }
     catch (err) {
         console.log("Route-Error: " + err);

@@ -11,7 +11,7 @@ let User = {};
  * Required set of inputs include --> mobile_number, 
  * username, email, and password 
  */
-User.addUser = async function (req, res) {
+User.addUser = async function (req) {
     try {
         let info = req;
         let hash;
@@ -67,7 +67,7 @@ User.addUser = async function (req, res) {
  * Required set of inputs include id(of the user), 
  * otp and timestamp. 
  */
-User.verifyUser = async function (req, res) {
+User.verifyUser = async function (req) {
     try {
         //time to wait for otp in minutes
         let MIN = 15;
@@ -147,7 +147,7 @@ User.verifyUser = async function (req, res) {
  * the user is provided with jsonwebtoken as part of
  * authorisation needs. Takes in email and password as the inputs.
  */
-User.AuthenticateUser = async function (req, res) {
+User.AuthenticateUser = async function (req) {
     try {
         let credentials = await models.passenger_credentials.findOne({
             where: {

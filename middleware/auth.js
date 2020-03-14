@@ -8,20 +8,20 @@ auth.jwtVerifyToken = async function (req, res, next) {
     const token = req.headers['x-access-token'];
     if (!token) {
         console.log("No token..! :/");
-        return ({
+        return res.json({
             'status': 403,
             'success': false,
-            'about': 'No token provided.'
+            'about': { 'comment': 'No token provided.', 'data': null }
         });
     }
 
     return jwt.verify(token, secret, function (err, decoded) {
         if (err) {
             console.log("Failed verification..!");
-            return ({
+            return res.json({
                 'status': 500,
                 'success': false,
-                'about': 'Failed verification..! :/'
+                'about': { 'comment': 'Failed verification..! :/', 'data': null }
             });
         }
 

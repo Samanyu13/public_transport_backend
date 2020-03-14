@@ -1,7 +1,7 @@
 const models = require('./../../models');
 let Common = {};
 
-Common.deleteAllPeopleData = async function (req, res) {
+Common.deleteAllPeopleData = async function () {
     try {
         let user = await models.passenger_details.destroy({
             where: {}

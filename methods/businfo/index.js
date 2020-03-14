@@ -1,5 +1,6 @@
 const models = require('./../../models');
 const Op = require('sequelize').Op
+const { sequelize } = require('./../../models');
 
 let BusInfo = {};
 
@@ -8,7 +9,7 @@ let BusInfo = {};
  * the input of values --> busNo, regNo, busMake, employeeCode,
  * and routeNo.
  */
-BusInfo.addToLiveBuses = async function (req, res) {
+BusInfo.addToLiveBuses = async function (req) {
     try {
         let info = req;
         let data = {};
@@ -41,7 +42,7 @@ BusInfo.addToLiveBuses = async function (req, res) {
  * Returns the busstop names of the busstop IDs that were
  * passed onto the function as an array.
  */
-BusInfo.getStopNamefromID = async function (req, res) {
+BusInfo.getStopNamefromID = async function (req) {
     try {
         let arr = req;
 
@@ -73,7 +74,7 @@ BusInfo.getStopNamefromID = async function (req, res) {
  * Returns the set of all busstop IDs on a particular 
  * route along with its sequence no.
  */
-BusInfo.getAllStopsOnTheRoute = async function (req, res) {
+BusInfo.getAllStopsOnTheRoute = async function (req) {
     try {
         let rid = req;
 
@@ -101,7 +102,81 @@ BusInfo.getAllStopsOnTheRoute = async function (req, res) {
     }
 }
 
-BusInfo.getRouteDetails = async function (req, res) {
+/**
+ * Returns the details of the live bus oresponding to the 
+ * provided employeeCde
+ */
+BusInfo.getLiveBusByEmpID = async function (req) {
+    try {
+        let live = await models.bus_live_status.findOne({
+            where: {
+                employee_code: req
+            }
+        });
+
+        if (live == null) {
+            return {
+                'about': 'Employee code mismatch..:/',
+                'status': 500,
+                'success': false,
+            }
+        }
+        else {
+            return {
+                'about': live,
+                'status': 200,
+                'success': true,
+            }
+        }
+    }
+    catch (err) {
+        console.log('Error-Methods: ' + err);
+        return {
+            'about': err,
+            'status': 500,
+            'success': false,
+        }
+    }
+}
+
+/**
+ * Removes the bus with the given busNo from the list of 
+ * live status ans logs the info to bus_log.
+ */
+BusInfo.removeFromLiveAndAddToLog = async function (req) {
+    try {
+        let busNo = req.bus_no;
+        console.log("REQQQ: " + req.bus_no);
+
+        let seq = await sequelize.transaction(async function (t) {
+            let rm = await models.bus_live_status.destroy({
+                where: {
+                    bus_no: busNo
+                }, transaction: t
+            });
+
+            let logg = await models.bus_log.create(req, { transaction: t });
+
+        });
+        console.log("SEQ: " + JSON.stringify(seq));
+        return {
+            'about': "Successfully removed from live buses and logged..:)",
+            'status': 200,
+            'success': true,
+        };
+
+    }
+    catch (err) {
+        console.log('Error-Methods: ' + err);
+        return {
+            'about': err,
+            'status': 500,
+            'success': false,
+        }
+    }
+}
+
+BusInfo.getRouteDetails = async function (req) {
     try {
 
     }

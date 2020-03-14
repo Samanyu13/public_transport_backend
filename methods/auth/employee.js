@@ -11,7 +11,7 @@ let Employee = {};
  * Required set of inputs include --> mobile_number, 
  * username, employee_id, email, and password 
  */
-Employee.addEmployee = async function (req, res) {
+Employee.addEmployee = async function (req) {
     try {
         let info = req;
         let hash;
@@ -147,7 +147,7 @@ Employee.verifyEmployee = async function (req, res) {
  * the employee is provided with jsonwebtoken as part of
  * authorisation needs. Takes in email and password as the inputs.
  */
-Employee.AuthenticateEmployee = async function (req, res) {
+Employee.AuthenticateEmployee = async function (req) {
     try {
         let credentials = await models.employee_credentials.findOne({
             where: {
@@ -189,7 +189,7 @@ Employee.AuthenticateEmployee = async function (req, res) {
             //success..!
             const token = jwt.sign({
                 employee_id: details.employee_id,
-                email: details.email,
+                email: req.email,
                 mobile_number: details.mobile_number
             }, api_sec, {
                 expiresIn: "1h"

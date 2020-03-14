@@ -97,7 +97,7 @@ router.post('/login', async (req, res) => {
 
         res.json({
             'success': conf.success,
-            'about': { 'data': null, 'comment': conf.about },
+            'about': { 'data': conf.about, 'comment': "Successfully authenticated..! :)" },
             'status': conf.status
         });
     }
