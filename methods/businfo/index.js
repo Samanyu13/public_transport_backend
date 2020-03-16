@@ -146,7 +146,7 @@ BusInfo.getLiveBusByEmpID = async function (req) {
 BusInfo.removeFromLiveAndAddToLog = async function (req) {
     try {
         let busNo = req.bus_no;
-        console.log("REQQQ: " + req.bus_no);
+        console.log("REQQQ: " + JSON.stringify(req));
 
         let seq = await sequelize.transaction(async function (t) {
             let rm = await models.bus_live_status.destroy({

@@ -92,11 +92,18 @@ router.post('/endTrip', auth.jwtVerifyToken, async function (req, res) {
         let info = data.employeeCode;
 
         let live = await methods.BusInfo.getLiveBusByEmpID(info);
-        console.log("LIVE: " + live.about);
+        // console.log("LIVE: " + live.about.route_no);
 
         if (live.success) {
             let bus = live.about;
-            let del = await methods.BusInfo.removeFromLiveAndAddToLog(bus);
+            let info = {};
+            info.bus_no = bus.bus_no;
+            info.reg_no = bus.reg_no;
+            info.bus_make = bus.bus_make;
+            info.employee_code = bus.employee_code;
+            info.route_no = bus.route_no;
+
+            let del = await methods.BusInfo.removeFromLiveAndAddToLog(info);
 
             res.json({
                 'success': del.success,
@@ -121,6 +128,6 @@ router.post('/endTrip', auth.jwtVerifyToken, async function (req, res) {
             'status': 500
         });
     }
-})
+});
 
 module.exports = router;
