@@ -15,6 +15,7 @@ Employee.addEmployee = async function (req) {
     try {
         let info = req;
         let hash;
+        let people_details;
         hash = await bcrypt.hash(info.password, saltRounds);
 
         let seq = await sequelize.transaction(async function (t) {
@@ -34,7 +35,7 @@ Employee.addEmployee = async function (req) {
                 });
             credentials.employee_id = people_details.employee_id;
 
-            people_credentials = await models.employee_credentials
+            await models.employee_credentials
                 .create(credentials, {
                     transaction: t
                 });
@@ -43,9 +44,11 @@ Employee.addEmployee = async function (req) {
             confirmData.employee_id = people_details.employee_id;
             confirmData.otp = info.otp;
 
-            people_confirm = await models.confirm_employee
+            await models.confirm_employee
                 .create(confirmData, { transaction: t });
         });
+
+        console.log("Transaction Output: " + seq);
 
 
         return {
@@ -67,7 +70,7 @@ Employee.addEmployee = async function (req) {
  * Required set of inputs include employee_id, 
  * otp and timestamp. 
  */
-Employee.verifyEmployee = async function (req, res) {
+Employee.verifyEmployee = async function (req) {
     try {
         //time to wait for otp in minutes
         let MIN = 15;
@@ -95,7 +98,7 @@ Employee.verifyEmployee = async function (req, res) {
         //check for timeout 
         if (oriTIME > recTIME) {
             if (details.otp == info.otp) {
-                let test = await models.employee_details.update({
+                await models.employee_details.update({
                     verified: true
                 }, {
                     where: {
@@ -139,6 +142,7 @@ Employee.verifyEmployee = async function (req, res) {
                 employee_id: req.employee_id
             }
         });
+        console.log("Finally - after destroying: " + x);
     }
 }
 
@@ -202,7 +206,7 @@ Employee.AuthenticateEmployee = async function (req) {
             }
         }
         else {
-            console.log("Error: " + err);
+            console.log("Invalid Password..!");
             return {
                 'about': "Invalid password..! :(",
                 'status': 400,

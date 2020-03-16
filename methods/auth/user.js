@@ -15,6 +15,7 @@ User.addUser = async function (req) {
     try {
         let info = req;
         let hash;
+        let people_details; 
         hash = await bcrypt.hash(info.password, saltRounds);
 
         let seq = await sequelize.transaction(async function (t) {
@@ -33,7 +34,7 @@ User.addUser = async function (req) {
                 });
             credentials.id = people_details.id;
 
-            people_credentials = await models.passenger_credentials
+            await models.passenger_credentials
                 .create(credentials, {
                     transaction: t
                 });
@@ -42,10 +43,11 @@ User.addUser = async function (req) {
             confirmData.id = people_details.id;
             confirmData.otp = info.otp;
 
-            people_confirm = await models.confirm_user
+            await models.confirm_user
                 .create(confirmData, { transaction: t });
         });
 
+        console.log("Transaction Output: " + seq);
 
         return {
             'about': people_details.id,
@@ -95,7 +97,7 @@ User.verifyUser = async function (req) {
         //check for timeout 
         if (oriTIME > recTIME) {
             if (details.otp == info.otp) {
-                let test = await models.passenger_details.update({
+                await models.passenger_details.update({
                     verified: true
                 }, {
                     where: {
@@ -134,7 +136,7 @@ User.verifyUser = async function (req) {
         }
     }
     finally {
-        let x = await models.confirm_user.destroy({
+        await models.confirm_user.destroy({
             where: {
                 id: req.id
             }
@@ -202,7 +204,7 @@ User.AuthenticateUser = async function (req) {
             }
         }
         else {
-            console.log("Error: " + err);
+            console.log("Invalid Password..!");
             return {
                 'about': "Invalid password..! :(",
                 'status': 400,

@@ -19,7 +19,7 @@ BusInfo.addToLiveBuses = async function (req) {
         data.employee_code = info.employeeCode;
         data.route_no = info.routeNo;
 
-        let newbus = await models.bus_live_status
+        await models.bus_live_status
             .create(data);
 
         return {
@@ -149,13 +149,13 @@ BusInfo.removeFromLiveAndAddToLog = async function (req) {
         console.log("REQQQ: " + JSON.stringify(req));
 
         let seq = await sequelize.transaction(async function (t) {
-            let rm = await models.bus_live_status.destroy({
+            await models.bus_live_status.destroy({
                 where: {
                     bus_no: busNo
                 }, transaction: t
             });
 
-            let logg = await models.bus_log.create(req, { transaction: t });
+            await models.bus_log.create(req, { transaction: t });
 
         });
         console.log("SEQ: " + JSON.stringify(seq));
@@ -176,18 +176,18 @@ BusInfo.removeFromLiveAndAddToLog = async function (req) {
     }
 }
 
-BusInfo.getRouteDetails = async function (req) {
-    try {
+// BusInfo.getRouteDetails = async function (req) {
+//     try {
 
-    }
-    catch (err) {
-        console.log('Error-Methods: ' + err);
-        return {
-            'about': err,
-            'status': 500,
-            'success': false,
-        }
-    }
-}
+//     }
+//     catch (err) {
+//         console.log('Error-Methods: ' + err);
+//         return {
+//             'about': err,
+//             'status': 500,
+//             'success': false,
+//         }
+//     }
+// }
 
 module.exports = BusInfo;

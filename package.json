@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "pretest": "eslint --ignore-path .gitignore ."
   },
   "dependencies": {
     "bcrypt": "^3.0.7",
@@ -17,5 +18,8 @@
     "mysql2": "^2.1.0",
     "sequelize": "^5.21.3",
     "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0"
   }
 }

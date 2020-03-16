@@ -70,7 +70,7 @@ router.post('/addAllDetails', async (req, res) => {
         let result1 = await methods.Public.InsertDataFromCSV.addBusMaster();
         let result2 = await methods.Public.InsertDataFromCSV.addRouteMaster();
         if (result1.success && result2.success) {
-            let result3 = await methods.Public.InsertDataFromCSV.addRouteDetails();
+            await methods.Public.InsertDataFromCSV.addRouteDetails();
         }
         res.json({
             'success': true,

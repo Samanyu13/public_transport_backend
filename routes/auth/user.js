@@ -35,7 +35,7 @@ router.post('/register', async (req, res) => {
 
         if (result.success == true) {
             mailInfo.otp = otp;
-            let confirmMail = await methods.EmailConfirmation.Send(mailInfo);
+            await methods.EmailConfirmation.Send(mailInfo);
         }
 
         res.json({

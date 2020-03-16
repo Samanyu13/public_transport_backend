@@ -3,10 +3,10 @@ let Common = {};
 
 Common.deleteAllPeopleData = async function () {
     try {
-        let user = await models.passenger_details.destroy({
+        await models.passenger_details.destroy({
             where: {}
         });
-        let emp_det = await models.employee_details.destroy({
+        await models.employee_details.destroy({
             where: {}
         });
         return {

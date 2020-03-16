@@ -26,8 +26,8 @@ router.post('/clearAllPeopleData', async (req, res) => {
 //common/clearAllBusData
 router.post('/clearAllBusData', async (req, res) => {
     try {
-        let result1 = await methods.Common.clearBusMaster();
-        let result2 = await methods.Common.clearRouteMaster();
+        await methods.Common.clearBusMaster();
+        await methods.Common.clearRouteMaster();
 
         res.json({
             'success': true,
