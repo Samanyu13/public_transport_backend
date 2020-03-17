@@ -9,6 +9,7 @@ After cloning the repo, run the command
 ```
 npm install
 ```
+Next, rename the folder 'example_config' to 'config' and fill in the required database config details onf the 'config.json' file. Secret keys are to filled in the 'api.json' file. 
 
 In order to run the project, use
 ```

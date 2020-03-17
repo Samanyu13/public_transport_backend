@@ -196,7 +196,7 @@ Employee.AuthenticateEmployee = async function (req) {
                 email: req.email,
                 mobile_number: details.mobile_number
             }, api_sec, {
-                expiresIn: "1h"
+                expiresIn: "1d"
             });
 
             return {

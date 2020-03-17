@@ -146,7 +146,7 @@ User.verifyUser = async function (req) {
 
 /**
  * Authenticates the user. Upon proper authentication, 
- * the user is provided with jsonwebtoken as part of
+ * the user is provided with a token as part of
  * authorisation needs. Takes in email and password as the inputs.
  */
 User.AuthenticateUser = async function (req) {
@@ -194,7 +194,7 @@ User.AuthenticateUser = async function (req) {
                 email: details.email,
                 mobile_number: details.mobile_number
             }, api_sec, {
-                expiresIn: "1h"
+                expiresIn: "1d"
             });
 
             return {

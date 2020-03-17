@@ -40,7 +40,7 @@ router.post('/register', async (req, res) => {
 
         res.json({
             'success': result.success,
-            'about': { 'data': null, 'comment': result.about },
+            'about': { 'data': result.about, 'comment': null },
             'status': result.status
         });
     }
@@ -66,7 +66,6 @@ router.post('/verify', async (req, res) => {
         info.timestamp = data.timestamp;
 
         let conf = await methods.Authentication.User.verifyUser(info);
-        console.log("XXX" + conf);
         res.json({
             'success': conf.success,
             'about': { 'data': null, 'comment': conf.about },

@@ -1,6 +1,7 @@
 const models = require('./../../models');
 const Op = require('sequelize').Op
 const { sequelize } = require('./../../models');
+const { QueryTypes } = require('sequelize');
 
 let BusInfo = {};
 
@@ -34,7 +35,7 @@ BusInfo.addToLiveBuses = async function (req) {
             'about': err,
             'status': 500,
             'success': false,
-        }
+        };
     }
 }
 
@@ -59,14 +60,14 @@ BusInfo.getStopNamefromID = async function (req) {
             'about': ans,
             'status': 200,
             'success': true
-        }
+        };
     }
     catch (err) {
         return {
             'about': err,
             'status': 500,
             'success': false,
-        }
+        };
     }
 }
 
@@ -90,7 +91,7 @@ BusInfo.getAllStopsOnTheRoute = async function (req) {
             'about': allIDs,
             'success': true,
             'status': 200
-        }
+        };
     }
     catch (err) {
         console.log('Error-Methods: ' + err);
@@ -98,7 +99,7 @@ BusInfo.getAllStopsOnTheRoute = async function (req) {
             'about': err,
             'status': 500,
             'success': false,
-        }
+        };
     }
 }
 
@@ -119,14 +120,14 @@ BusInfo.getLiveBusByEmpID = async function (req) {
                 'about': 'Employee code mismatch..:/',
                 'status': 500,
                 'success': false,
-            }
+            };
         }
         else {
             return {
                 'about': live,
                 'status': 200,
                 'success': true,
-            }
+            };
         }
     }
     catch (err) {
@@ -135,7 +136,7 @@ BusInfo.getLiveBusByEmpID = async function (req) {
             'about': err,
             'status': 500,
             'success': false,
-        }
+        };
     }
 }
 
@@ -146,7 +147,6 @@ BusInfo.getLiveBusByEmpID = async function (req) {
 BusInfo.removeFromLiveAndAddToLog = async function (req) {
     try {
         let busNo = req.bus_no;
-        console.log("REQQQ: " + JSON.stringify(req));
 
         let seq = await sequelize.transaction(async function (t) {
             await models.bus_live_status.destroy({
@@ -172,22 +172,104 @@ BusInfo.removeFromLiveAndAddToLog = async function (req) {
             'about': err,
             'status': 500,
             'success': false,
-        }
+        };
     }
 }
 
-// BusInfo.getRouteDetails = async function (req) {
-//     try {
+/**
+ * Returns the stopID when the name is provided.
+ */
+BusInfo.getStopIDByName = async function (info) {
+    try {
+        let stopid = await models.busstop_master.findOne({
+            where: {
+                busstop: info
+            },
+        });
 
-//     }
-//     catch (err) {
-//         console.log('Error-Methods: ' + err);
-//         return {
-//             'about': err,
-//             'status': 500,
-//             'success': false,
-//         }
-//     }
-// }
+        if (stopid == null) {
+            return {
+                'about': "Invalid StopName :/",
+                'status': 404,
+                'success': false
+            };
+        }
+
+        return {
+            'about': stopid.busstop_id,
+            'status': 200,
+            'success': true,
+        };
+    }
+    catch (err) {
+        console.log('Error-Methods: ' + err);
+        return {
+            'about': err,
+            'status': 500,
+            'success': false,
+        };
+    }
+}
+
+/**
+ * Returns the details of all the routes such that they are 
+ * in a direction from the source to destination.
+ */
+BusInfo.retrieveLiveRouteIDsFromStops = async function (info) {
+    try {
+        let routeIDs = await models.sequelize.query(`SELECT route_id FROM route_details 
+        as x WHERE x.busstop_id = $startStop AND x.route_id IN (SELECT route_id FROM 
+        route_details as y, bus_live_statuses AS z WHERE y.busstop_id = $endStop 
+        AND x.id < y.id AND y.route_id = z.route_no)`,
+            {
+                bind: {
+                    startStop: info.from,
+                    endStop: info.to
+                },
+                type: QueryTypes.SELECT
+            });
+
+        return {
+            'about': routeIDs,
+            'status': 200,
+            'success': true,
+        };
+    }
+    catch (err) {
+        console.log('Error-Methods: ' + err);
+        return {
+            'about': err,
+            'status': 500,
+            'success': false,
+        };
+    }
+}
+
+BusInfo.getRouteDataFromIDs = async function (info) {
+    try {
+
+        let routeData = await models.route_master.findAll({
+            where: {
+                [Op.or]: info
+            },
+            attributes: ['route_id', 'route_name']
+        });
+        routeData = JSON.stringify(routeData);
+        routeData = JSON.parse(routeData);
+        return {
+            'about': routeData,
+            'status': 200,
+            'success': true,
+        };
+    }
+    catch (err) {
+        console.log('Error-Methods: ' + err);
+        return {
+            'about': err,
+            'status': 500,
+            'success': false,
+        };
+    }
+}
 
 module.exports = BusInfo;

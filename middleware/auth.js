@@ -19,9 +19,9 @@ auth.jwtVerifyToken = async function (req, res, next) {
         if (err) {
             console.log("Failed verification..!");
             return res.json({
-                'status': 500,
+                'status': 401,
                 'success': false,
-                'about': { 'comment': 'Failed verification..! :/', 'data': null }
+                'about': { 'comment': 'Invalid token..! Failed verification..! :/', 'data': null }
             });
         }
 
