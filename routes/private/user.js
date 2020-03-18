@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const methods = require('./../../methods');
+const io = require('./../../node_modules/socket.io-client/dist/socket.io');
 // const auth = require('./../../middleware/auth');
 
 //private/user/retrieveAllLiveRoutes
@@ -14,19 +15,21 @@ router.post('/retrieveAllLiveRoutes', async function (req, res) {
 
         data.from = f.about;
         data.to = t.about;
-        // console.log(JSON.stringify(t));
         let routeDetails = await methods.BusInfo.retrieveLiveRouteIDsFromStops(data);
-        // console.log(routeDetails.about);
-        let info = routeDetails.about;
-        let tosend = await methods.BusInfo.getRouteDataFromIDs(info);
-        console.log(tosend.about);
+
+        console.log(routeDetails.about);
 
         res.json({
             'success': true,
-            'about': { 'data': null, 'comment': tosend.about },
+            'about': { 'data': routeDetails.about, 'comment': null },
             'status': 200
         });
+
+        // let socket = io();
+        // socket
     }
+
+
 
     catch (err) {
         console.log("Route-Error: " + err);

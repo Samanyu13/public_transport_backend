@@ -96,3 +96,17 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
+/**
+ * Setting ip socket connection with Node http server. 
+ */
+var io = require('socket.io')(server);
+
+io.on('connection', function (socket) {
+  console.log("HANDSHAKE: " + socket.handshake.query);
+
+  socket.on('joinRoom', function (room) {
+    socket.join(room);
+  });
+
+  // socket.on('sendLoc', )
+});

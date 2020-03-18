@@ -217,10 +217,18 @@ BusInfo.getStopIDByName = async function (info) {
  */
 BusInfo.retrieveLiveRouteIDsFromStops = async function (info) {
     try {
-        let routeIDs = await models.sequelize.query(`SELECT route_id FROM route_details 
-        as x WHERE x.busstop_id = $startStop AND x.route_id IN (SELECT route_id FROM 
-        route_details as y, bus_live_statuses AS z WHERE y.busstop_id = $endStop 
-        AND x.id < y.id AND y.route_id = z.route_no)`,
+        console.log(info);
+        const query = `
+                        SELECT R.route_id, R.route_name, B.bus_no, B.employee_code, B.reg_no, B.bus_make
+                        FROM route_masters AS R , bus_live_statuses AS B 
+                        WHERE R.route_id = B.route_no AND R.route_id IN
+                            (SELECT route_id FROM route_details as x 
+                                WHERE 
+                                    x.busstop_id = $startStop AND x.route_id IN 
+                                    (SELECT route_id FROM route_details as y, bus_live_statuses AS z 
+                                    WHERE y.busstop_id = $endStop AND x.id < y.id AND y.route_id = z.route_no))
+                       `
+        let routeIDs = await models.sequelize.query(query,
             {
                 bind: {
                     startStop: info.from,
@@ -228,7 +236,7 @@ BusInfo.retrieveLiveRouteIDsFromStops = async function (info) {
                 },
                 type: QueryTypes.SELECT
             });
-
+        console.log(routeIDs)
         return {
             'about': routeIDs,
             'status': 200,
