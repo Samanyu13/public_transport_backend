@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const methods = require('./../../methods');
-const io = require('./../../node_modules/socket.io-client/dist/socket.io');
+// const io = require('./../../node_modules/socket.io-client/dist/socket.io');
 // const auth = require('./../../middleware/auth');
 
 //private/user/retrieveAllLiveRoutes

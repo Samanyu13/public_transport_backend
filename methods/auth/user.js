@@ -15,7 +15,7 @@ User.addUser = async function (req) {
     try {
         let info = req;
         let hash;
-        let people_details; 
+        let people_details;
         hash = await bcrypt.hash(info.password, saltRounds);
 
         let seq = await sequelize.transaction(async function (t) {
@@ -160,7 +160,10 @@ User.AuthenticateUser = async function (req) {
         //user not found
         if (credentials == null) {
             return {
-                'about': "Invalid mail-ID :/",
+                'about': {
+                    'data': null,
+                    'comment': "Invalid mail-ID :/"
+                },
                 'status': 404,
                 'success': false
             }
@@ -182,7 +185,10 @@ User.AuthenticateUser = async function (req) {
             //user details not found
             if (details == null) {
                 return {
-                    'about': "The user_details not found.. That's unlikely :/",
+                    'about': {
+                        'data': null,
+                        'comment': "The user_details not found.. That's unlikely :/"
+                    },
                     'status': 404,
                     'success': false
                 }
@@ -198,7 +204,10 @@ User.AuthenticateUser = async function (req) {
             });
 
             return {
-                'about': token,
+                'about': {
+                    'data': token,
+                    'comment': details.id
+                },
                 'status': 200,
                 'success': true
             }
@@ -206,7 +215,10 @@ User.AuthenticateUser = async function (req) {
         else {
             console.log("Invalid Password..!");
             return {
-                'about': "Invalid password..! :(",
+                'about': {
+                    'data': null,
+                    'comment': "Invalid password..! :("
+                },
                 'status': 400,
                 'success': false
             }
@@ -215,7 +227,10 @@ User.AuthenticateUser = async function (req) {
     catch (err) {
         console.log("Error-Methods: " + err);
         return {
-            'about': err,
+            'about': {
+                'data': null,
+                'comment': err
+            },
             'status': 500,
             'success': false
         }
