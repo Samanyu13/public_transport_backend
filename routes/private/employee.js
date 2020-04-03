@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 const methods = require('./../../methods');
 const auth = require('./../../middleware/auth');
-const io = require('socket.io-client');
-// const socket = io('http://localhost:3000');
 
 //private/employee/startTrip
 router.post('/startTrip', auth.jwtVerifyToken, async function (req, res) {
@@ -37,11 +35,6 @@ router.post('/startTrip', auth.jwtVerifyToken, async function (req, res) {
                 let stop_names = await methods.BusInfo.getStopNamefromID(IDs);
 
                 if (stop_names.success) {
-
-                    // socket.emit('employeeCreatesRoom', 'B' + data.busNo, function (data) {
-                    //     console.log("Employee Side Socket Status: " + data);
-                    // });
-
                     about.data = stop_names.about;
                     about.comment = "Successfully retrieved data..!";
                     status = 200;

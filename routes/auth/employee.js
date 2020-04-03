@@ -33,14 +33,20 @@ router.post('/register', async (req, res) => {
         console.log("***********DEBUG*************");
         ////////////////////DEBUG////////////////////
 
-        if (result.success == true) {
+        let about = {};
+        if (result.success) {
             mailInfo.otp = otp;
             await methods.EmailConfirmation.Send(mailInfo);
+            about.data = result.about;
+            about.comment = null;
         }
-
+        if (!result.success) {
+            about.comment = result.about;
+            about.data = null;
+        }
         res.json({
             'success': result.success,
-            'about': { 'data': result.about, 'comment': null },
+            'about': about,
             'status': result.status
         });
     }
@@ -96,7 +102,7 @@ router.post('/login', async (req, res) => {
 
         res.json({
             'success': conf.success,
-            'about': { 'data': conf.about, 'comment': "Successfully authenticated..! :)" },
+            'about': { 'data': conf.about.data, 'comment': conf.about.comment },
             'status': conf.status
         });
     }

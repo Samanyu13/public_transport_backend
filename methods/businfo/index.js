@@ -212,7 +212,7 @@ BusInfo.getStopIDByName = async function (info) {
 }
 
 /**
- * Returns the details of all the routes such that they are 
+ * Returns the details of all the live routes such that they are 
  * in a direction from the source to destination.
  */
 BusInfo.retrieveLiveRouteIDsFromStops = async function (info) {
@@ -222,6 +222,48 @@ BusInfo.retrieveLiveRouteIDsFromStops = async function (info) {
                         SELECT R.route_id, R.route_name, B.bus_no, B.employee_code, B.reg_no, B.bus_make
                         FROM route_masters AS R , bus_live_statuses AS B 
                         WHERE R.route_id = B.route_no AND R.route_id IN
+                            (SELECT route_id FROM route_details as x 
+                                WHERE 
+                                    x.busstop_id = $startStop AND x.route_id IN 
+                                    (SELECT route_id FROM route_details as y, bus_live_statuses AS z 
+                                    WHERE y.busstop_id = $endStop AND x.id < y.id AND y.route_id = z.route_no))
+                       `
+        let routeIDs = await models.sequelize.query(query,
+            {
+                bind: {
+                    startStop: info.from,
+                    endStop: info.to
+                },
+                type: QueryTypes.SELECT
+            });
+        console.log(routeIDs)
+        return {
+            'about': routeIDs,
+            'status': 200,
+            'success': true,
+        };
+    }
+    catch (err) {
+        console.log('Error-Methods: ' + err);
+        return {
+            'about': err,
+            'status': 500,
+            'success': false,
+        };
+    }
+}
+
+/**
+ * Returns the details of all the routes such that they are 
+ * in a direction from the source to destination.
+ */
+BusInfo.retrieveAllRouteIDsFromStops = async function (info) {
+    try {
+        console.log(info);
+        const query = `
+                        SELECT R.route_id, R.route_name 
+                        FROM route_masters AS R 
+                        WHERE R.route_id IN
                             (SELECT route_id FROM route_details as x 
                                 WHERE 
                                     x.busstop_id = $startStop AND x.route_id IN 
@@ -266,6 +308,30 @@ BusInfo.getRouteDataFromIDs = async function (info) {
         routeData = JSON.parse(routeData);
         return {
             'about': routeData,
+            'status': 200,
+            'success': true,
+        };
+    }
+    catch (err) {
+        console.log('Error-Methods: ' + err);
+        return {
+            'about': err,
+            'status': 500,
+            'success': false,
+        };
+    }
+}
+
+BusInfo.getAllBusNames = async function() {
+    try {
+        let busData = await models.busstop_master.findAll({
+            where: {},
+            attributes: ['busstop']
+        });
+        busData = JSON.stringify(busData);
+        busData = JSON.parse(busData);
+        return {
+            'about': busData,
             'status': 200,
             'success': true,
         };

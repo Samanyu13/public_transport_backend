@@ -57,10 +57,20 @@ Employee.addEmployee = async function (req) {
             'success': true,
         };
     } catch (err) {
+        let about = "";
+        let status = 500;
+        console.log("Error-Methods: " + err);
+
+        if (err['name'] == 'SequelizeUniqueConstraintError') {
+            about = err['errors'][0].message.toUpperCase();
+            status = 409;
+            console.log(about);
+        }
+
         return {
-            'about': err,
-            'status': 500,
-            'success': false,
+            'about': about,
+            'status': status,
+            'success': false
         }
     }
 }
@@ -75,6 +85,7 @@ Employee.verifyEmployee = async function (req) {
         //time to wait for otp in minutes
         let MIN = 15;
         let info = req;
+
 
         let details = await models.confirm_employee.findOne({
             where: {
@@ -106,6 +117,12 @@ Employee.verifyEmployee = async function (req) {
                     },
                 });
 
+                await models.confirm_employee.destroy({
+                    where: {
+                        employee_id: req.employee_id
+                    }
+                });
+
                 return {
                     'about': "Success..! Employee verified..!",
                     'status': 200,
@@ -115,12 +132,17 @@ Employee.verifyEmployee = async function (req) {
             else {
                 return {
                     'about': "Oops..! Wrong OTP..:|",
-                    'status': 400,
-                    'success': true
+                    'status': 422,
+                    'success': false
                 }
             }
         }
         else {
+            await models.confirm_employee.destroy({
+                where: {
+                    employee_id: req.employee_id
+                }
+            });
             return {
                 'about': "Timeout..!",
                 'status': 408,
@@ -130,19 +152,12 @@ Employee.verifyEmployee = async function (req) {
     }
     catch (err) {
         console.log("Error-Methods: " + err);
+        console.log(err);
         return {
             'about': err,
             'status': 500,
             'success': false
         }
-    }
-    finally {
-        let x = await models.confirm_employee.destroy({
-            where: {
-                employee_id: req.employee_id
-            }
-        });
-        console.log("Finally - after destroying: " + x);
     }
 }
 
@@ -159,10 +174,13 @@ Employee.AuthenticateEmployee = async function (req) {
             }
         });
 
-        //user not found
+        //employee not found
         if (credentials == null) {
             return {
-                'about': "Invalid mail-ID :/",
+                'about': {
+                    'data': null,
+                    'comment': "Invalid mail-ID :/"
+                },
                 'status': 404,
                 'success': false
             }
@@ -184,7 +202,10 @@ Employee.AuthenticateEmployee = async function (req) {
             //user details not found
             if (details == null) {
                 return {
-                    'about': "The user_details not found.. That's unlikely :/",
+                    'about': {
+                        'data': null,
+                        'comment': "The employee_details not found.. That's unlikely :/"
+                    },
                     'status': 404,
                     'success': false
                 }
@@ -200,7 +221,10 @@ Employee.AuthenticateEmployee = async function (req) {
             });
 
             return {
-                'about': token,
+                'about': {
+                    'data': { 'token': token, 'name': details.username },
+                    'comment': details.id
+                },
                 'status': 200,
                 'success': true
             }
@@ -208,7 +232,10 @@ Employee.AuthenticateEmployee = async function (req) {
         else {
             console.log("Invalid Password..!");
             return {
-                'about': "Invalid password..! :(",
+                'about': {
+                    'data': null,
+                    'comment': "Invalid password..! :("
+                },
                 'status': 400,
                 'success': false
             }
@@ -217,7 +244,10 @@ Employee.AuthenticateEmployee = async function (req) {
     catch (err) {
         console.log("Error-Methods: " + err);
         return {
-            'about': err,
+            'about': {
+                'data': null,
+                'comment': err
+            },
             'status': 500,
             'success': false
         }

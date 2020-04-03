@@ -55,10 +55,19 @@ User.addUser = async function (req) {
             'success': true,
         };
     } catch (err) {
+        let about = "";
+        let status = 500;
         console.log("Error-Methods: " + err);
+
+        if (err['name'] == 'SequelizeUniqueConstraintError') {
+            about = err['errors'][0].message.toUpperCase();
+            status = 409;
+            console.log(about);
+        }
+
         return {
-            'about': err,
-            'status': 500,
+            'about': about,
+            'status': status,
             'success': false
         }
     }
@@ -105,6 +114,12 @@ User.verifyUser = async function (req) {
                     },
                 });
 
+                await models.confirm_user.destroy({
+                    where: {
+                        id: req.id
+                    }
+                });
+
                 return {
                     'about': "Success..! User verified..!",
                     'status': 200,
@@ -114,12 +129,17 @@ User.verifyUser = async function (req) {
             else {
                 return {
                     'about': "Oops..! Wrong OTP..:|",
-                    'status': 400,
-                    'success': true
+                    'status': 422,
+                    'success': false
                 }
             }
         }
         else {
+            await models.confirm_user.destroy({
+                where: {
+                    id: req.id
+                }
+            });
             return {
                 'about': "Timeout..!",
                 'status': 408,
@@ -134,13 +154,6 @@ User.verifyUser = async function (req) {
             'status': 500,
             'success': false
         }
-    }
-    finally {
-        await models.confirm_user.destroy({
-            where: {
-                id: req.id
-            }
-        });
     }
 }
 
@@ -205,7 +218,7 @@ User.AuthenticateUser = async function (req) {
 
             return {
                 'about': {
-                    'data': token,
+                    'data': { 'token': token, 'name': details.username },
                     'comment': details.id
                 },
                 'status': 200,
