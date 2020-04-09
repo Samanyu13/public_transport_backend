@@ -51,10 +51,8 @@ BusInfo.getStopNamefromID = async function (req) {
             where: {
                 [Op.or]: arr
             },
-            attributes: ['busstop']
+            attributes: ['busstop', 'busstop_id']
         });
-        ans = JSON.stringify(ans);
-        ans = JSON.parse(ans);
 
         return {
             'about': ans,
@@ -77,16 +75,27 @@ BusInfo.getStopNamefromID = async function (req) {
  */
 BusInfo.getAllStopsOnTheRoute = async function (req) {
     try {
+        function sortByProperty(property) {
+            return function (a, b) {
+                if (a[property] > b[property])
+                    return 1;
+                else if (a[property] < b[property])
+                    return -1;
+
+                return 0;
+            }
+        }
+
         let rid = req;
 
         let allIDs = await models.route_details.findAll({
             where: {
                 route_id: rid
             },
-            attributes: ['busstop_id']
+            attributes: ['busstop_id', 'id']
         });
-        //I have no idea if the retrieved set is sorted in
-        // order of the busstops !!!
+
+        allIDs.sort(sortByProperty("id"));
         return {
             'about': allIDs,
             'success': true,
@@ -267,8 +276,8 @@ BusInfo.retrieveAllRouteIDsFromStops = async function (info) {
                             (SELECT route_id FROM route_details as x 
                                 WHERE 
                                     x.busstop_id = $startStop AND x.route_id IN 
-                                    (SELECT route_id FROM route_details as y, bus_live_statuses AS z 
-                                    WHERE y.busstop_id = $endStop AND x.id < y.id AND y.route_id = z.route_no))
+                                    (SELECT route_id FROM route_details as y  
+                                    WHERE y.busstop_id = $endStop AND x.id < y.id))
                        `
         let routeIDs = await models.sequelize.query(query,
             {
@@ -322,7 +331,7 @@ BusInfo.getRouteDataFromIDs = async function (info) {
     }
 }
 
-BusInfo.getAllBusNames = async function() {
+BusInfo.getAllBusNames = async function () {
     try {
         let busData = await models.busstop_master.findAll({
             where: {},
