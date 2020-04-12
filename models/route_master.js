@@ -22,5 +22,25 @@ module.exports = function (sequelize, DataTypes) {
             });
     };
 
+    RouteMaster.associate = function (models) {
+        models.route_master
+            .hasMany(models.bus_request_details, {
+                onDelete: 'CASCADE',
+                foreignKey: {
+                    name: 'route_id'
+                }
+            });
+    };
+
+    RouteMaster.associate = function (models) {
+        models.route_master
+            .hasMany(models.bus_request_live, {
+                onDelete: 'CASCADE',
+                foreignKey: {
+                    name: 'route_id'
+                }
+            });
+    };
+
     return RouteMaster;
 };

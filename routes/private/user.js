@@ -68,8 +68,8 @@ router.post('/retrieveAllRoutes', async function (req, res) {
     }
 });
 
-//private/user/getAllBusNames
-router.get('/getAllBusNames', async function (req, res) {
+//private/user/getAllBusStopNames
+router.get('/getAllBusStopNames', async function (req, res) {
     try {
         let alldata = await methods.BusInfo.getAllBusNames();
         console.log(alldata.about);
@@ -94,37 +94,31 @@ router.get('/getAllBusNames', async function (req, res) {
 //private/user/getAllStopsByID
 router.post('/getAllStopsByID', async function (req, res) {
     try {
-        // console.log(JSON.stringify(req.body) + "REQ");
         let rid = req.body.route_id;
-        let alldata = await methods.BusInfo.getAllStopsOnTheRoute(rid);
-        // let about = alldata.about;
-        let IDs = JSON.stringify(alldata.about);
-        IDs = JSON.parse(IDs);
-        const onlyids = IDs.map(a => a.busstop_id);
-        let result = await methods.BusInfo.getStopNamefromID(onlyids);
+        let res1 = await methods.BusInfo.getAllStopsOnTheRoute(rid);
+        let about = res1.about;
 
-        let names = result.about;
-        names = JSON.stringify(names);
-        names = JSON.parse(names);
+        let onlyids = [];
+        about.forEach(obj => {
+            onlyids.push({ 'busstop_id': obj.busstop_id });
+        });
+        let res2 = await methods.BusInfo.getStopNamefromID(onlyids);
+        let nameIDs = res2.about;
 
-        let ordered_list = [];
-        IDs.forEach(obj => {
-            console.log(typeof names);
-            console.log(obj.busstop_id + "XXX");
-            // var i = names.findIndex(elem => elem.busstop_id == obj.busstop_id);
-            var i;
-            var ab = names.find(function(elem, index) {
-                i = index;
-                return elem.busstop_id == obj.busstop_id;
+        var map = new Map();
+        nameIDs.forEach(obj => {
+            map[obj.busstop_id] = obj;
+        });
 
-            });
-            console.log(ab);
-            ordered_list.push(names[i].busstop);
+        let data = [];
+
+        onlyids.forEach(obj => {
+            data.push(map[obj.busstop_id]);
         });
 
         res.json({
             'success': true,
-            'about': { 'data': ordered_list, 'comment': null },
+            'about': { 'data': data, 'comment': null },
             'status': 200
         });
     }

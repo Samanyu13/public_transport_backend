@@ -21,5 +21,15 @@ module.exports = function (sequelize, DataTypes) {
             },
         });
 
+        PassengerDetails.associate = function (models) {
+            models.passenger_details
+                .hasMany(models.bus_request_live, {
+                    onDelete: 'CASCADE',
+                    foreignKey: {
+                        name: 'user_id'
+                    }
+                });
+        };
+
     return PassengerDetails;
 };

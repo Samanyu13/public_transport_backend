@@ -54,8 +54,12 @@ BusInfo.getStopNamefromID = async function (req) {
             attributes: ['busstop', 'busstop_id']
         });
 
+        let data = [];
+        ans.forEach(obj => {
+            data.push(obj.dataValues);
+        });
         return {
-            'about': ans,
+            'about': data,
             'status': 200,
             'success': true
         };
@@ -95,9 +99,17 @@ BusInfo.getAllStopsOnTheRoute = async function (req) {
             attributes: ['busstop_id', 'id']
         });
 
-        allIDs.sort(sortByProperty("id"));
+        console.log(allIDs);
+        let data = [];
+        allIDs.forEach(element => {
+            data.push(element.dataValues);
+        });
+
+        data.sort(sortByProperty("id"));
+        console.log(data);
+
         return {
-            'about': allIDs,
+            'about': data,
             'success': true,
             'status': 200
         };
@@ -303,7 +315,10 @@ BusInfo.retrieveAllRouteIDsFromStops = async function (info) {
         };
     }
 }
-
+/**
+ * Retrieve route data from oute Ids, given an array 
+ * of route IDs
+ */
 BusInfo.getRouteDataFromIDs = async function (info) {
     try {
 
@@ -331,7 +346,10 @@ BusInfo.getRouteDataFromIDs = async function (info) {
     }
 }
 
-BusInfo.getAllBusNames = async function () {
+/**
+ * Retrieves the set of all busstop names
+ */
+BusInfo.getAllBusStopNames = async function () {
     try {
         let busData = await models.busstop_master.findAll({
             where: {},
