@@ -1,5 +1,5 @@
 const models = require('./../../models');
-const Op = require('sequelize').Op
+const Op = require('sequelize').Op;
 const { sequelize } = require('./../../models');
 const { QueryTypes } = require('sequelize');
 
@@ -355,6 +355,7 @@ BusInfo.getAllBusStopNames = async function () {
             where: {},
             attributes: ['busstop']
         });
+
         busData = JSON.stringify(busData);
         busData = JSON.parse(busData);
         return {

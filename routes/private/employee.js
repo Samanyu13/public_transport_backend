@@ -31,8 +31,13 @@ router.post('/startTrip', auth.jwtVerifyToken, async function (req, res) {
                 let IDs = JSON.stringify(stop_ids.about);
                 IDs = JSON.parse(IDs);
 
+                let input = [];
+                IDs.forEach(obj => {
+                    input.push({'busstop_id': obj.busstop_id});
+                });
+
                 //if getting StopName from IDs succeeds
-                let stop_names = await methods.BusInfo.getStopNamefromID(IDs);
+                let stop_names = await methods.BusInfo.getStopNamefromID(input);
 
                 if (stop_names.success) {
                     about.data = stop_names.about;

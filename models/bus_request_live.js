@@ -8,7 +8,7 @@ module.exports = function (sequelize, DataTypes) {
             },
             bus_request_id: {
                 type: DataTypes.INTEGER(),
-                unique: true,
+                allowNull: false,
             },
             user_id: {
                 type: DataTypes.INTEGER(),

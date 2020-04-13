@@ -4,6 +4,8 @@ const methods = require('./../../methods');
 // const io = require('./../../node_modules/socket.io-client/dist/socket.io');
 // const auth = require('./../../middleware/auth');
 
+router.use('/requestbus', require('./request_bus'));
+
 //private/user/retrieveAllLiveRoutes
 router.post('/retrieveAllLiveRoutes', async function (req, res) {
     try {
@@ -71,7 +73,7 @@ router.post('/retrieveAllRoutes', async function (req, res) {
 //private/user/getAllBusStopNames
 router.get('/getAllBusStopNames', async function (req, res) {
     try {
-        let alldata = await methods.BusInfo.getAllBusNames();
+        let alldata = await methods.BusInfo.getAllBusStopNames();
         console.log(alldata.about);
 
         res.json({
