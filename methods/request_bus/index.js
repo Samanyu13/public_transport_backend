@@ -35,7 +35,7 @@ RequestBus.checkRecordExistance = async function (info) {
         }
     }
     catch (err) {
-        console.log("Error-Methods: " + err);
+        console.log("Error-Methods-checkRecordExistance: " + err);
         return {
             'about': "The check failed:/l..!",
             'status': 500,
@@ -77,7 +77,7 @@ RequestBus.addNewRecord = async function (info) {
         }
     }
     catch (err) {
-        console.log("Error-Methods: " + err);
+        console.log("Error-Methods-addNewRecord: " + err);
         return {
             'about': "The update failed..!",
             'status': 500,
@@ -91,7 +91,8 @@ RequestBus.addNewRecord = async function (info) {
  */
 RequestBus.updateExistingRecord = async function (info) {
     try {
-        let seq = await sequelize.transaction(async function (t) {
+        let seq;
+        seq = await sequelize.transaction(async function (t) {
             let bus_request_id = info.bus_request_id;
 
             let ans = models.bus_request_details
@@ -109,13 +110,13 @@ RequestBus.updateExistingRecord = async function (info) {
         console.log("Transaction Output: " + seq);
 
         return {
-            'about': "Request Successful..!",
+            'about': "Bus Request successfully added..!",
             'status': 200,
             'success': true
         }
     }
     catch (err) {
-        console.log("Error-Methods: " + err);
+        console.log("Error-Methods-updateExistingRecord: " + err);
         return {
             'about': err,
             'status': 500,
@@ -155,7 +156,7 @@ RequestBus.isUserDuplicateEntry = async function (info) {
         }
     }
     catch (err) {
-        console.log("Error-Methods: " + err);
+        console.log("Error-Methods-isUserDuplicateEntry: " + err);
         return {
             'about': "Check for duplicate entry failed..!",
             'status': 500,
@@ -189,7 +190,7 @@ RequestBus.ifThresholdExceed = async function (info) {
         }
     }
     catch (err) {
-        console.log("Error-Methods: " + err);
+        console.log("Error-Methods-ifThresholdExceed: " + err);
         return {
             'about': err,
             'status': 500,
@@ -215,7 +216,7 @@ RequestBus.insertToBusesForVerification = async function (info) {
         }
     }
     catch (err) {
-        console.log("Error-Methods: " + err);
+        console.log("Error-Methods-insertToBusesForVerification: " + err);
         return {
             'about': err,
             'status': 500,
@@ -251,7 +252,7 @@ RequestBus.getUnconfirmedBusByID = async function (info) {
         }
     }
     catch (err) {
-        console.log("Error-Methods: " + err);
+        console.log("Error-Methods-getUnconfirmedBusByID: " + err);
         return {
             'about': err,
             'status': 500,
@@ -277,7 +278,7 @@ RequestBus.confirmTrip = async function (info) {
         }
     }
     catch (err) {
-        console.log("Error-Methods: " + err);
+        console.log("Error-Methods-confirmTrip: " + err);
         return {
             'about': err,
             'status': 500,

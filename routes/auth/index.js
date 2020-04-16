@@ -7,4 +7,7 @@ router.use('/user', require('./user'));
 //auth/employee
 router.use('/employee', require('./employee'));
 
+//auth/adminAuth
+router.use('/adminAuth', require('./admin'));
+
 module.exports = router;

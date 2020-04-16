@@ -15,8 +15,6 @@ TIME FRAME DIVISION
 
 //private/user/requestbus/requestbusInput
 router.post('/requestbusInput', auth.jwtVerifyToken, async function (req, res) {
-    const THRESHOLD = 10;
-    let shouldISendNotification = false;
     try {
         let data = JSON.stringify(req.body);
         data = JSON.parse(data);
@@ -56,11 +54,15 @@ router.post('/requestbusInput', auth.jwtVerifyToken, async function (req, res) {
                 tosend.bus_request_id = ans.about;
                 let exist = await methods.RequestBus.updateExistingRecord(tosend);
 
-                //check if the count exceeded the threshold
                 if (exist.success) {
+                    //check if the count exceeded the threshold
                     let notify = await methods.RequestBus.ifThresholdExceed(ans.about);
+                    console.log(notify.about);
                     if (notify.success) {
-                        await methods.RequestBus.insertToBusesForVerification(check);
+                        //exceeded the threshold
+                        let x = await methods.RequestBus.insertToBusesForVerification(check);
+                        console.log(x.about);
+
                     }
                 }
 
@@ -91,11 +93,6 @@ router.post('/requestbusInput', auth.jwtVerifyToken, async function (req, res) {
             'about': { 'data': null, 'comment': err },
             'status': 500
         });
-    }
-    finally {
-        if (shouldISendNotification) {
-            //
-        }
     }
 });
 
