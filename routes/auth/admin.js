@@ -42,10 +42,6 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.get('/login', function (req, res) {
-    res.render('./admin/login', { title: 'Express' });
-});
-
 //auth/adminAuth/login
 router.post('/login', async (req, res) => {
     try {
@@ -98,6 +94,11 @@ router.post('/removeByID', async (req, res) => {
             'status': 500
         });
     }
+});
+
+//auth/adminAuth/login
+router.get('/login', function (req, res) {
+    res.render('private/login', { title: 'Express' });
 });
 
 module.exports = router;

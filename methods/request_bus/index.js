@@ -49,7 +49,7 @@ RequestBus.checkRecordExistance = async function (info) {
  */
 RequestBus.addNewRecord = async function (info) {
     try {
-        let seq = await sequelize.transaction(async function (t) {
+        await sequelize.transaction(async function (t) {
             let details = {};
             details.date = info.date;
             details.time_frame = info.time_frame;
@@ -67,8 +67,6 @@ RequestBus.addNewRecord = async function (info) {
             await models.bus_request_live
                 .create(livelog, { transaction: t });
         });
-
-        console.log("Transaction Output: " + seq);
 
         return {
             'about': " Request Successful..!",
@@ -91,11 +89,10 @@ RequestBus.addNewRecord = async function (info) {
  */
 RequestBus.updateExistingRecord = async function (info) {
     try {
-        let seq;
-        seq = await sequelize.transaction(async function (t) {
+        await sequelize.transaction(async function (t) {
             let bus_request_id = info.bus_request_id;
 
-            let ans = models.bus_request_details
+            models.bus_request_details
                 .increment('count', { by: info.count, where: { id: bus_request_id } });
 
             let livelog = {};
@@ -106,8 +103,6 @@ RequestBus.updateExistingRecord = async function (info) {
             await models.bus_request_live
                 .create(livelog, { transaction: t });
         });
-
-        console.log("Transaction Output: " + seq);
 
         return {
             'about': "Bus Request successfully added..!",
@@ -165,6 +160,9 @@ RequestBus.isUserDuplicateEntry = async function (info) {
     }
 }
 
+/**
+ * Checks if a route has exceeded the threshold
+ */
 RequestBus.ifThresholdExceed = async function (info) {
     const THRESHOLD = 10;
     try {
@@ -174,7 +172,9 @@ RequestBus.ifThresholdExceed = async function (info) {
             .findOne({
                 where: {
                     id: info,
-                    [Op.gte]: THRESHOLD
+                    count: {
+                        [Op.gte]: THRESHOLD
+                    }
                 }
             });
 
@@ -199,15 +199,17 @@ RequestBus.ifThresholdExceed = async function (info) {
     }
 }
 
+/**
+ * Insert route data for verification
+ */
 RequestBus.insertToBusesForVerification = async function (info) {
     try {
-
         let data = {};
         data.time_frame = info.time_frame;
         data.date = info.date;
         data.route_id = info.route_id;
-
-        await models.request_buses_for_verification.create(data);
+        let res = await models.request_buses_for_verification.create(data);
+        console.log("RES of insertion: " + JSON.stringify(res));
 
         return {
             'about': "Route data submitted for final verification..!",
@@ -217,27 +219,35 @@ RequestBus.insertToBusesForVerification = async function (info) {
     }
     catch (err) {
         console.log("Error-Methods-insertToBusesForVerification: " + err);
+        let about = err;
+        let status = 500;
+        if (err.name == 'SequelizeUniqueConstraintError') {
+            about = "This particular date-route-time_frame has already been added for verification..:)";
+            status = 409;
+        }
         return {
-            'about': err,
-            'status': 500,
+            'about': about,
+            'status': status,
             'success': false
         }
     }
 }
 
-RequestBus.getUnconfirmedBusByID = async function (info) {
+/**
+ * Get the route data submitted for verification by ID
+ */
+RequestBus.getUnconfirmedRouteByID = async function (info) {
     try {
         let about = null;
         let success = false;
         let ans = await models.request_buses_for_verification
-        .findOne({
-            where: {
-                id: info
-            }
-        });
+            .findOne({
+                where: {
+                    id: info
+                }
+            });
 
-        if(ans != null) {
-            console.log("ITHAANO: " + ans);
+        if (ans != null) {
             about = ans;
             success = true;
         }
@@ -252,7 +262,7 @@ RequestBus.getUnconfirmedBusByID = async function (info) {
         }
     }
     catch (err) {
-        console.log("Error-Methods-getUnconfirmedBusByID: " + err);
+        console.log("Error-Methods-getUnconfirmedRouteByID: " + err);
         return {
             'about': err,
             'status': 500,
@@ -261,6 +271,9 @@ RequestBus.getUnconfirmedBusByID = async function (info) {
     }
 }
 
+/**
+ * Confirm the bus submitted for verification
+ */
 RequestBus.confirmTrip = async function (info) {
     try {
 
@@ -275,6 +288,31 @@ RequestBus.confirmTrip = async function (info) {
             'about': about,
             'status': 200,
             'success': success
+        }
+    }
+    catch (err) {
+        console.log("Error-Methods-confirmTrip: " + err);
+        return {
+            'about': err,
+            'status': 500,
+            'success': false
+        }
+    }
+}
+
+/**
+ * Get the set of all routes submitted for verification
+ */
+RequestBus.getAllUnconfirmedRoutes = async function (info) {
+    try {
+        let ans = await models.request_buses_for_verification.findAll({
+            where: {}
+        });
+        console.log("ANS: " + ans);
+        return {
+            'about': ans,
+            'status': 200,
+            'success': true
         }
     }
     catch (err) {

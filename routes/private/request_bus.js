@@ -34,6 +34,7 @@ router.post('/requestbusInput', auth.jwtVerifyToken, async function (req, res) {
         tosend.user_id = data.user_id;
 
         let ans = await methods.RequestBus.checkRecordExistance(check);
+        console.log("Res of checkRecordExistance: " + JSON.stringify(ans));
 
         if (ans.success) {
             let nextCheck = {};
@@ -42,6 +43,7 @@ router.post('/requestbusInput', auth.jwtVerifyToken, async function (req, res) {
 
             //check if the user is has already applied for this route
             let dupl = await methods.RequestBus.isUserDuplicateEntry(nextCheck);
+            console.log("Res of isUserDuplicateEntry: " + JSON.stringify(ans));
 
             if (dupl.success) {
                 //Duplicate --> this means he can't apply again
@@ -49,23 +51,27 @@ router.post('/requestbusInput', auth.jwtVerifyToken, async function (req, res) {
                 status = 409;
                 success = false;
             }
+
             else {
                 //Not duplicate and hence add that data
                 tosend.bus_request_id = ans.about;
                 let exist = await methods.RequestBus.updateExistingRecord(tosend);
 
                 if (exist.success) {
+
                     //check if the count exceeded the threshold
                     let notify = await methods.RequestBus.ifThresholdExceed(ans.about);
                     console.log(notify.about);
+
                     if (notify.success) {
                         //exceeded the threshold
+                        console.log("Res of checking threshold: " + JSON.stringify(notify));
+                        console.log("CHECK: " + JSON.stringify(check));
                         let x = await methods.RequestBus.insertToBusesForVerification(check);
                         console.log(x.about);
-
                     }
-                }
 
+                }
                 comment = exist.about;
                 status = exist.status;
                 success = exist.success;
@@ -79,9 +85,46 @@ router.post('/requestbusInput', auth.jwtVerifyToken, async function (req, res) {
             status = newOne.status;
             success = newOne.success;
         }
+        // */
         res.json({
             'success': success,
             'about': { 'data': null, 'comment': comment },
+            'status': status
+        });
+    }
+    catch (err) {
+        console.log("Route-Error: " + err);
+
+        res.json({
+            'success': false,
+            'about': { 'data': null, 'comment': err },
+            'status': 500
+        });
+    }
+});
+
+//private/user/requestbus/getAllToBeVerifiedRoutes
+router.get('/getAllToBeVerifiedRoutes', auth.jwtVerifyToken, async function (req, res) {
+    try {
+        let ans = await methods.RequestBus.getAllUnconfirmedRoutes();
+        let success = ans.success;
+        let status = ans.status;
+        let comment = "";
+
+        let out = ans.about;
+        if (out && out.length) {
+            //not empty
+            comment = "Successfully retrieved the data..!";
+        }
+        else {
+            //empty
+            status = 204; //No content
+            comment = "Looks like there are no buses for verification..!";
+        }
+
+        res.json({
+            'success': success,
+            'about': { 'data': out, 'comment': comment },
             'status': status
         });
     }

@@ -8,10 +8,9 @@ async function AdminLogin() {
     try {
         let result = await axios.post('http://localhost:3000/auth/adminAuth/login', tosend);
         console.log(result.data.about.data);
-        if (result.success) {
+        if (result.data.success) {
             localStorage.setItem('user_token', result.data.about.data);
-            window.location.href = "";
-
+            window.location.href = "../../private/admin/dashboard";
         }
         else {
             document.getElementById('formError').innerHTML = result.data.about.comment;
