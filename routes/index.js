@@ -5,12 +5,16 @@ var router = express.Router();
 router.get('/', function (req, res) {
   res.render('index', { title: 'Express' });
 });
+
 //auth
 router.use('/auth', require('./auth'));
+
 //private
 router.use('/private', require('./private'));
+
 //common
 router.use('/common', require('./common'));
+
 //public
 router.use('/public', require('./public'));
 

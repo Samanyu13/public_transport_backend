@@ -374,4 +374,39 @@ BusInfo.getAllBusStopNames = async function () {
     }
 }
 
+/**
+ * Returns the Route_Name when the routeID is provided.
+ */
+BusInfo.getRouteNameByID = async function (info) {
+    try {
+        let id = await models.route_master.findOne({
+            where: {
+                route_id: info
+            },
+        });
+
+        if (id == null) {
+            return {
+                'about': "Invalid RouteID :/",
+                'status': 404,
+                'success': false
+            };
+        }
+
+        return {
+            'about': stopid.route_name,
+            'status': 200,
+            'success': true,
+        };
+    }
+    catch (err) {
+        console.log('Error-Methods: ' + err);
+        return {
+            'about': err,
+            'status': 500,
+            'success': false,
+        };
+    }
+}
+
 module.exports = BusInfo;

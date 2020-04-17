@@ -45,24 +45,19 @@ router.post('/register', async (req, res) => {
 //auth/adminAuth/login
 router.post('/login', async (req, res) => {
     try {
-        let data = JSON.stringify(req.body);
-        data = JSON.parse(data);
-
         let info = {};
-        info.employee_id = data.employeeID;
-        info.password = data.password;
+        info.employee_id = req.body.empid;
+        info.password = req.body.password;
 
         let conf = await methods.Authentication.AdminAuth.authenticateAdmin(info);
 
-        res.json({
-            'success': conf.success,
-            'about': { 'data': conf.about.data, 'comment': conf.about.comment },
-            'status': conf.status
-        });
+        let path = (conf.success) ? '/private/admin/dashboard' : '/error';
+
+        res.redirect(path);
     }
     catch (err) {
         console.log("Error: " + err);
-        res.json({
+        res.render('/error', {
             'success': false,
             'about': { 'data': null, 'comment': err },
             'status': 500

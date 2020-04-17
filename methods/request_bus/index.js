@@ -240,6 +240,7 @@ RequestBus.getUnconfirmedRouteByID = async function (info) {
     try {
         let about = null;
         let success = false;
+        let status;
         let ans = await models.request_buses_for_verification
             .findOne({
                 where: {
@@ -250,14 +251,16 @@ RequestBus.getUnconfirmedRouteByID = async function (info) {
         if (ans != null) {
             about = ans;
             success = true;
+            status = 200;
         }
         else {
             about = "Could'nt find the corresponding route data:/..!"
+            status = 404;
         }
 
         return {
             'about': about,
-            'status': 200,
+            'status': status,
             'success': success
         }
     }
