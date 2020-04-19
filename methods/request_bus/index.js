@@ -284,13 +284,14 @@ RequestBus.confirmTrip = async function (info) {
         data.time_frame = info.time_frame;
         data.date = info.date;
         data.route_id = info.route_id;
+        data.time = info.time;
 
         await models.request_buses_confirmed.create(data);
 
         return {
-            'about': about,
+            'about': "Data added to Confirmed buses..!",
             'status': 200,
-            'success': success
+            'success': true
         }
     }
     catch (err) {
@@ -306,7 +307,7 @@ RequestBus.confirmTrip = async function (info) {
 /**
  * Get the set of all routes submitted for verification
  */
-RequestBus.getAllUnconfirmedRoutes = async function (info) {
+RequestBus.getAllUnconfirmedRoutes = async function () {
     try {
         let ans = await models.request_buses_for_verification.findAll({
             where: {}
@@ -319,7 +320,7 @@ RequestBus.getAllUnconfirmedRoutes = async function (info) {
         }
     }
     catch (err) {
-        console.log("Error-Methods-confirmTrip: " + err);
+        console.log("Error-Methods-getAllUnconfirmedRoutes: " + err);
         return {
             'about': err,
             'status': 500,
@@ -328,4 +329,51 @@ RequestBus.getAllUnconfirmedRoutes = async function (info) {
     }
 }
 
+RequestBus.removeUnconfirmedRouteByID = async function (info) {
+    try {
+        let ans = await models.request_buses_for_verification.destroy({
+            where: {
+                id: info
+            }
+        });
+        return {
+            'about': ans,
+            'status': 200,
+            'success': true
+        }
+    }
+    catch (err) {
+        console.log("Error-Methods-removeUnconfirmedRouteByID: " + err);
+        return {
+            'about': err,
+            'status': 500,
+            'success': false
+        }
+    }
+}
+
+/**
+ * Get the set of all confirmed routes
+ */
+RequestBus.getAllConfirmedRoutes = async function () {
+    try {
+        let ans = await models.request_buses_confirmed.findAll({
+            where: {}
+        });
+        console.log("ANS: " + ans);
+        return {
+            'about': ans,
+            'status': 200,
+            'success': true
+        }
+    }
+    catch (err) {
+        console.log("Error-Methods-getAllConfirmedRoutes: " + err);
+        return {
+            'about': err,
+            'status': 500,
+            'success': false
+        }
+    }
+}
 module.exports = RequestBus;

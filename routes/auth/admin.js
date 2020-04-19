@@ -16,7 +16,6 @@ router.post('/register', async (req, res) => {
 
         let result = await methods.Authentication.AdminAuth.addNewAdmin(info);
 
-        console.log("RESULT: " + JSON.stringify(result));
         if (!result.success) {
             about.data = null;
             about.comment = result.about;
@@ -51,7 +50,15 @@ router.post('/login', async (req, res) => {
 
         let conf = await methods.Authentication.AdminAuth.authenticateAdmin(info);
 
-        let path = (conf.success) ? '/private/admin/dashboard' : '/error';
+        let path = (conf.success) ? '/private/admin/dashboard' : '/auth/adminAuth/login';
+
+        if (!conf.success) {
+            req.session.message = {
+                type: 'danger',
+                intro: 'Login Failed..!',
+                message: conf.about.comment
+            };
+        }
 
         res.redirect(path);
     }

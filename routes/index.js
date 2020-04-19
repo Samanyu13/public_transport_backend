@@ -18,4 +18,9 @@ router.use('/common', require('./common'));
 //public
 router.use('/public', require('./public'));
 
+//error
+router.get('/error', function (req, res) {
+  res.render('error', { title: 'ERROR' });
+});
+
 module.exports = router;

@@ -63,11 +63,36 @@ body {
     transition-delay: 0s, 0s;
 }
 
+input[type="text"]:read-only {
+    background: #dbd8d8;
+    color: #dbd8d8 !important;
+}
+
+.placeholder {
+    position: relative;
+    font-weight: 400;
+
+}
+
+.placeholder::after {
+    position: absolute;
+    left: 5px;
+    top: 3px;
+    content: attr(data-placeholder);
+    pointer-events: none;
+    opacity: 0.6;
+}
+
 ::placeholder {
     color: #006400;
     letter-spacing: 1.2px;
     font-size: 13px;
     font-weight: 400;
+}
+
+.form-control[disabled=disabled] {
+    color: #c04141 !important;
+
 }
 
 .form-control:focus {

@@ -8,7 +8,6 @@ module.exports = function (sequelize, DataTypes) {
             },
             route_id: {
                 type: DataTypes.STRING(10),
-                unique: true,
                 unique: 'compositeIndex',
             },
             time_frame: {
@@ -18,6 +17,11 @@ module.exports = function (sequelize, DataTypes) {
             },
             date: {
                 type: DataTypes.DATE(),
+                allowNull: false,
+                unique: 'compositeIndex',
+            },
+            time: {
+                type: DataTypes.TIME(),
                 allowNull: false,
                 unique: 'compositeIndex',
             },

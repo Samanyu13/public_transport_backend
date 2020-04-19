@@ -5,14 +5,25 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="../../stylesheets/login.css" />
-    <script src="../../javascripts/main.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 
 
 <body>
+
+    <% if(message) { %>
+    <div style="text-align: center;" class="alert alert-<%=message.type%>">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong> <%= message.intro%>
+        </strong> <%= message.message%>
+    </div>
+    <% } %>
+
     <div class="form-signin">
         <div class="title">
             <span class="main-title text-uppercase text-center">KSRTC ADMIN LOGIN</span>
@@ -32,10 +43,6 @@
             </div>
             <div class="form-group">
                 <input type="submit" class="btn-signin" value="Log In">
-
-                <!-- <button class="btn-signin" onclick="AdminLogin()">
-                    Log In
-                </button> -->
         </form>
     </div>
     <div class="form-group text-center">

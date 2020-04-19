@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To Be Verified</title>
-    <script src="/javascripts/main.js"></script>
     <link rel="stylesheet" href="/stylesheets/table.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -56,11 +55,9 @@
                 "August", "September", "October",
                 "November", "December"
             ];
-            console.log(d)
             var day = d.getDate();
             var monthIndex = d.getMonth();
             var year = d.getFullYear();
-            console.log(day + " " + monthIndex + " " + year)
             return day + ' ' + monthNames[monthIndex] + ' ' + year;
         }
         // ************************************** Format Date **************************************
@@ -80,7 +77,10 @@
                 <td><%= data[i].route_id %></td>
                 <td><%= map[data[i].time_frame] %></td>
                 <td><%= formatDate(data[i].date) %></td>
-                <td><a href="./verification/data[i].id">Click Here</a></td>
+                <%  let val = data[i].id; 
+                    let url = './verification/' + val;
+                %>
+                <td><a href=<%=url%>>Click Here</a></td>
             </tr>
             <% } %>
         </table>

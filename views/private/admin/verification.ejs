@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verification</title>
-    <link rel="stylesheet" href="/stylesheets/dashboard.scss">
+    <link rel="stylesheet" href="/stylesheets/login.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
@@ -27,7 +27,7 @@
             </ul>
         </div>
         <div class="mx-auto order-0">
-            <a class="navbar-brand mx-auto" href="#">ADMIN DASHBOARD</a>
+            <a class="navbar-brand mx-auto" href="#">ADMIN DASHBOARD - VERIFICATION</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -35,11 +35,104 @@
         <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="./../../auth/adminAuth/login">Logout</a>
+                    <a class="nav-link" href="./../../../auth/adminAuth/login">Logout</a>
                 </li>
             </ul>
         </div>
     </nav>
+
+    <%
+    // ************************************** Format Date **************************************
+    function formatDate(date) {
+        d = new Date(date);
+  
+        var monthNames = [
+            "January", "February", "March",
+            "April", "May", "June", "July",
+            "August", "September", "October",
+            "November", "December"
+        ];
+        var day = d.getDate();
+        var monthIndex = d.getMonth();
+        var year = d.getFullYear();
+        return day + ' ' + monthNames[monthIndex] + ' ' + year;
+    }
+    // ************************************** Format Date **************************************
+
+    var map = new Map();
+    map[0] = '6AM to 12PM (Morning)';
+    map[1] = '12PM to 6PM (Evening)';
+    map[2] = '6PM to 6AM (Night)';
+
+    function getMin(val) {
+        if(val == 0) {
+            return '06:00:00';
+        }
+        else if(val == 1) {
+            return '12:00:00';
+        }
+        else {
+            return '18:00:00';
+        }
+    }
+
+    function getMax(val) {
+        if(val == 0) {
+            return '12:00:00';
+        }
+        else if(val == 1) {
+            return '18:00:00';
+        }
+        else {
+            return '06:00:00';
+        }
+    }
+
+    %>
+    <% if(message) { %>
+    <div style="text-align: center;" class="alert alert-<%=message.type%>">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong> <%= message.intro%>
+        </strong> <%= message.message%>
+    </div>
+    <% } %>
+
+    <div class="form-signin">
+        </br> </br>
+        <%  
+            let val = data.id; 
+            let url = '/private/admin/confirmation/' + val;
+        %>
+        <form method="POST" action="<%=url%>">
+
+            <div class="form-group">
+                <div class="placeholder" data-placeholder="<%=data.route_name %>">
+                    <input name="route_id" class="form-control" value="<%=data.route_id %>" autofocus="autofocus"
+                        type="text" readonly>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="placeholder" data-placeholder="<%=map[data.time_frame] %>">
+                    <input name="time_frame" class="form-control" value="<%=data.time_frame %>" type="text" readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="placeholder" data-placeholder="<%=formatDate(data.date) %>">
+                    <input name="date" class="form-control" value="<%=data.date %>" type="text" readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <input name="time" class="form-control" placeholder="" type="time" required="required"
+                    max="<%=getMax(data.time_frame) %>" min="<%=getMin(data.time_frame) %>">
+                <p>24 - hour</p>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" class="btn-signin" value="Submit">
+        </form>
+    </div>
+
 </body>
 
 </html>

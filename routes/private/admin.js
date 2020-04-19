@@ -1,18 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('./../../middleware/auth');
+// const auth = require('./../../middleware/auth');
 const methods = require('./../../methods');
 
 //private/admin/dashboard
 router.get('/dashboard', function (req, res) {
-    res.render('private/admin/dashboard', { title: 'Express' });
+    res.render('private/admin/dashboard');
 });
 
 //private/admin/toVerify
 router.get('/toVerify', async function (req, res) {
     try {
         let unconfirmed = await methods.RequestBus.getAllUnconfirmedRoutes();
-        console.log("QQQ" + JSON.stringify(unconfirmed));
         let data = unconfirmed.about;
         res.render('private/admin/toverify', {
             'data': data,
@@ -22,47 +21,127 @@ router.get('/toVerify', async function (req, res) {
 
     }
     catch (err) {
-        res.render('/error', {
-            'success': false,
-            'about': { 'data': null, 'comment': err },
-            'status': 500
-        });
+        console.log(err);
+        req.session.message = {
+            type: 'danger',
+            intro: 'Error',
+            message: err
+        };
+        res.redirect('/error');
     }
 });
 
 //private/admin/confirmed
-router.get('/confirmed', function (req, res) {
-    res.render('private/admin/confirmed', { title: 'Express' });
+router.get('/confirmed', async function (req, res) {
+    try {
+        let confirmed = await methods.RequestBus.getAllConfirmedRoutes();
+        let data = confirmed.about;
+        res.render('private/admin/confirmed', {
+            'data': data,
+            'success': confirmed.success,
+            'status': confirmed.status
+        });
+
+    }
+    catch (err) {
+        console.log(err);
+        req.session.message = {
+            type: 'danger',
+            intro: 'Error..!',
+            message: err
+        };
+        res.redirect('/error');
+    }
 });
 
 //private/admin/verification
 router.get('/verification/:id', async function (req, res) {
-    let id = req.params.id;
-    let result = await methods.RequestBus.getUnconfirmedRouteByID(id);
-    let data = {};
+    try {
+        let id = req.params.id;
+        let result = await methods.RequestBus.getUnconfirmedRouteByID(id);
+        let data = {};
 
-    if (result.success) {
-        if (result.time_frame == 0) {
-            data.time_frame = '6AM to 12PM (Morning)';
-        }
-        else if (result.time_frame == 1) {
-            data.time_frame = '12PM to 6PM (Evening)';
+        if (result.success) {
+            data.time_frame = result.about.time_frame;
+            data.route_id = result.about.route_id;
+            data.date = result.about.date;
+
+            let getName = await methods.BusInfo.getRouteNameByID(result.about.route_id);
+            data.route_name = getName.about;
+            data.id = id;
+
+            console.log("RESULT: " + JSON.stringify(data));
+
+            res.render('private/admin/verification', { 'data': data });
+
         }
         else {
-            data.time_frame = '6PM to 6AM (Night)';
+            console.log("SCENE..!");
+            req.session.message = {
+                type: 'warning',
+                intro: 'Fetching Bus Data Failed..!',
+                message: result.about.comment
+            };
+        }
+    }
+    catch (err) {
+        console.log(err);
+        req.session.message = {
+            type: 'danger',
+            intro: 'Error',
+            message: err
+        };
+        res.redirect('/error');
+    }
+});
+
+//private/admin/confirmation
+router.post('/confirmation', async function (req, res) {
+    let flag;
+    try {
+        let data = {};
+        data.time = req.body.time;
+        data.time_frame = req.body.time_frame;
+        data.route_id = req.body.route_id;
+        data.date = req.body.date;
+        let ans = await methods.RequestBus.confirmTrip(data);
+
+        flag = ans.success;
+        let path = (ans.success) ? '/private/admin/dashboard' : '/private/admin/toVerify';
+
+        if (!ans.success) {
+            path = '/private/admin/confirmation/' + id;
+            req.session.message = {
+                type: 'danger',
+                intro: 'Confirming Bus Failed..!',
+                message: ans.about.comment
+            };
+        }
+        else {
+            path = '/private/admin/dashboard';
+            req.session.message = {
+                type: 'success',
+                intro: 'Bus Confirmed..!',
+                message: ans.about.comment
+            };
         }
 
-        let getName = await methods.BusInfo.getRouteNameByID(result.route_id);
-        data.route_name = getName.about;
-        data.route_id = result.route_id;
-
-        res.render('private/admin/verification', { 'data': data });
-
+        res.redirect(path);
     }
-    else {
-        console.log("SCENE..!");
+    catch (err) {
+        console.log(err);
+        req.session.message = {
+            type: 'danger',
+            intro: 'Error',
+            message: err
+        };
+        res.redirect('/error');
     }
-
+    finally {
+        if (flag) {
+            await methods.RequestBus.removeUnconfirmedRouteByID(id);
+        }
+    }
 });
 
 module.exports = router;

@@ -73,23 +73,23 @@ BusInfo.getStopNamefromID = async function (req) {
     }
 }
 
+
+function sortByProperty(property) {
+    return function (a, b) {
+        if (a[property] > b[property])
+            return 1;
+        else if (a[property] < b[property])
+            return -1;
+
+        return 0;
+    }
+}
 /**
  * Returns the set of all busstop IDs on a particular 
  * route along with its sequence no.
  */
 BusInfo.getAllStopsOnTheRoute = async function (req) {
     try {
-        function sortByProperty(property) {
-            return function (a, b) {
-                if (a[property] > b[property])
-                    return 1;
-                else if (a[property] < b[property])
-                    return -1;
-
-                return 0;
-            }
-        }
-
         let rid = req;
 
         let allIDs = await models.route_details.findAll({
@@ -394,7 +394,7 @@ BusInfo.getRouteNameByID = async function (info) {
         }
 
         return {
-            'about': stopid.route_name,
+            'about': id.route_name,
             'status': 200,
             'success': true,
         };
