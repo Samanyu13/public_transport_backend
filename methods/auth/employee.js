@@ -170,7 +170,7 @@ Employee.AuthenticateEmployee = async function (req) {
     try {
         let credentials = await models.employee_credentials.findOne({
             where: {
-                email: req.email
+                employee_id: req.employeeID
             }
         });
 
@@ -179,7 +179,7 @@ Employee.AuthenticateEmployee = async function (req) {
             return {
                 'about': {
                     'data': null,
-                    'comment': "Invalid mail-ID :/"
+                    'comment': "Invalid Employee-ID :/"
                 },
                 'status': 404,
                 'success': false
@@ -223,7 +223,7 @@ Employee.AuthenticateEmployee = async function (req) {
             return {
                 'about': {
                     'data': { 'token': token, 'name': details.username },
-                    'comment': details.id
+                    'comment': details.employee_id
                 },
                 'status': 200,
                 'success': true

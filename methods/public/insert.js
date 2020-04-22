@@ -4,9 +4,9 @@ const fs = require('fs');
 let InsertDataFromCSV = {};
 
 //paths to the csv files
-const path_busMaster = __dirname + '/sheets/busstop_master.csv';
+const path_busMaster = __dirname + '/sheets/new_bus_master.csv';
 const path_routeMaster = __dirname + '/sheets/route_master.csv';
-const path_routeDetails = __dirname + '/sheets/route_details.csv';
+const path_routeDetails = __dirname + '/sheets/new_route_details.csv';
 
 InsertDataFromCSV.addBusMaster = async function () {
     try {

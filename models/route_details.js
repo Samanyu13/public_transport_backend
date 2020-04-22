@@ -19,14 +19,6 @@ module.exports = function (sequelize, DataTypes) {
                 allowNull: false,
                 primaryKey: true,
             },
-            latitude: {
-                type: DataTypes.STRING(10),
-                allowNull: false,
-            },
-            longitude: {
-                type: DataTypes.STRING(10),
-                allowNull: false,
-            },
         });
     // RouteDetails.associate = function (models) {
     //     models.route_details

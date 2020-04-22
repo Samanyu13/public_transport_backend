@@ -30,10 +30,17 @@ BusInfo.addToLiveBuses = async function (req) {
         };
     }
     catch (err) {
-        console.log('Error-Methods: ' + err);
+        let about = err;
+        let status = 500;
+        console.log(err.name);
+        console.log('Errror-Methods-addToLiveBuses');
+        if (err.name == 'SequelizeUniqueConstraintError') {
+            about = 'It appears that the given bus number is already enroute..! Check the no. and try again:)';
+            status = 200;
+        }
         return {
-            'about': err,
-            'status': 500,
+            'about': about,
+            'status': status,
             'success': false,
         };
     }
@@ -43,7 +50,7 @@ BusInfo.addToLiveBuses = async function (req) {
  * Returns the busstop names of the busstop IDs that were
  * passed onto the function as an array.
  */
-BusInfo.getStopNamefromID = async function (req) {
+BusInfo.getStopNamesfromID = async function (req) {
     try {
         let arr = req;
 
@@ -73,6 +80,39 @@ BusInfo.getStopNamefromID = async function (req) {
     }
 }
 
+/**
+ * Returns the busstop names with their locations IDs that were
+ * passed onto the function as an array.
+ */
+BusInfo.getStopNameLocationsfromID = async function (req) {
+    try {
+        let arr = req;
+
+        let ans = await models.busstop_master.findAll({
+            where: {
+                [Op.or]: arr
+            },
+            attributes: ['busstop', 'busstop_id', 'latitude', 'longitude']
+        });
+
+        let data = [];
+        ans.forEach(obj => {
+            data.push(obj.dataValues);
+        });
+        return {
+            'about': data,
+            'status': 200,
+            'success': true
+        };
+    }
+    catch (err) {
+        return {
+            'about': err,
+            'status': 500,
+            'success': false,
+        };
+    }
+}
 
 function sortByProperty(property) {
     return function (a, b) {
@@ -138,7 +178,7 @@ BusInfo.getLiveBusByEmpID = async function (req) {
 
         if (live == null) {
             return {
-                'about': 'Employee code mismatch..:/',
+                'about': 'Cannot find a corresponding entry related to this Employee..:/',
                 'status': 500,
                 'success': false,
             };

@@ -139,4 +139,48 @@ router.get('/getAllToBeVerifiedRoutes', auth.jwtVerifyToken, async function (req
     }
 });
 
+//private/user/requestbus/getAllStopLocationsByID
+router.post('/getAllStopLocationsByID', async function (req, res) {
+    try {
+        let rid = req.body.route_id;
+        let res1 = await methods.BusInfo.getAllStopsOnTheRoute(rid);
+        let about = res1.about;
+
+        let onlyids = [];
+        about.forEach(obj => {
+            onlyids.push({ 'busstop_id': obj.busstop_id });
+        });
+        let res2 = await methods.BusInfo.getStopNameLocationsfromID(onlyids);
+        let nameIDs = res2.about;
+
+        var map = new Map();
+        nameIDs.forEach(obj => {
+            map[obj.busstop_id] = obj;
+        });
+
+        let data = [];
+
+        onlyids.forEach(obj => {
+            data.push(map[obj.busstop_id]);
+        });
+
+        res.json({
+            'success': true,
+            'about': { 'data': data, 'comment': null },
+            'status': 200
+        });
+    }
+    catch (err) {
+        console.log("Route-Error: " + err);
+
+        res.json({
+            'success': false,
+            'about': { 'data': null, 'comment': err },
+            'status': 500
+        });
+    }
+});
+
+
+
 module.exports = router;

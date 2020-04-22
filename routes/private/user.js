@@ -104,7 +104,7 @@ router.post('/getAllStopsByID', async function (req, res) {
         about.forEach(obj => {
             onlyids.push({ 'busstop_id': obj.busstop_id });
         });
-        let res2 = await methods.BusInfo.getStopNamefromID(onlyids);
+        let res2 = await methods.BusInfo.getStopNamesfromID(onlyids);
         let nameIDs = res2.about;
 
         var map = new Map();
@@ -134,4 +134,5 @@ router.post('/getAllStopsByID', async function (req, res) {
         });
     }
 });
+
 module.exports = router;

@@ -37,7 +37,7 @@ router.post('/startTrip', auth.jwtVerifyToken, async function (req, res) {
                 });
 
                 //if getting StopName from IDs succeeds
-                let stop_names = await methods.BusInfo.getStopNamefromID(input);
+                let stop_names = await methods.BusInfo.getStopNamesfromID(input);
 
                 if (stop_names.success) {
                     about.data = stop_names.about;

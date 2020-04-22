@@ -91,18 +91,23 @@ router.post('/verify', async (req, res) => {
 //auth/employee/login
 router.post('/login', async (req, res) => {
     try {
+        let flag = false;
         let data = JSON.stringify(req.body);
         data = JSON.parse(data);
 
         let info = {};
-        info.email = data.email;
+        info.employeeID = data.employeeID;
         info.password = data.password;
 
         let conf = await methods.Authentication.Employee.AuthenticateEmployee(info);
 
+        if (conf.success) {
+            let check = await methods.BusInfo.getLiveBusByEmpID(data.employeeID);
+            flag = check.success;
+        }
         res.json({
             'success': conf.success,
-            'about': { 'data': conf.about.data, 'comment': conf.about.comment },
+            'about': { 'data': conf.about.data, 'comment': conf.about.comment, 'check': flag },
             'status': conf.status
         });
     }
