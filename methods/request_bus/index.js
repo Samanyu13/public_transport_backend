@@ -164,7 +164,8 @@ RequestBus.isUserDuplicateEntry = async function (info) {
  * Checks if a route has exceeded the threshold
  */
 RequestBus.ifThresholdExceed = async function (info) {
-    const THRESHOLD = 10;
+    console.log("KEREELO")
+    const THRESHOLD = 1;
     try {
         let about = null;
         let success = false;

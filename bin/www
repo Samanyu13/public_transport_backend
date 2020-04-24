@@ -100,12 +100,13 @@ function onListening() {
 /**
  * Setting ip socket connection with Node http server. 
  */
-/*
+
 var io = require('socket.io')(server);
 
 io.on('connection', function (socket) {
   // console.log("HANDSHAKE: " + JSON.stringify(socket.handshake));
 
+  //EMPLOYEE ROOM CREATION
   socket.on('employeeCreatesRoom', function (room, ackFn) {
     let info = { 'success': false, 'status': 500, 'about': null };
     //A room with the same roomInfo exists
@@ -128,13 +129,47 @@ io.on('connection', function (socket) {
     console.log("New room created..!");
   });
 
-  socket.on('clientJoinsRoom', function (room, ackFn) {
+  //EMPLOYEE CLOSING THE ROOM ON TRIP-END
+  socket.on('tripEnd', function (room, ackFn) {
     let info = { 'success': false, 'status': 400, 'about': null };
-    if(!(io.sockets.adapter.rooms[room])) {
-      info.about = "Error..! Employee Room not found..! :(";
+    if (!(io.sockets.adapter.rooms[room])) {
+      info.about = 'The room does not exist ..:|';
       ackFn(info);
     }
-    
+    else {
+      //Disconnect all the clients on this room
+      io.of('/').in(room).clients((err, socketIDs) => {
+        if (err) {
+          info.about = "Socket ID collection failed..!";
+          ackFn(info);
+          throw err;
+        }
+        socketIDs.forEach(socketID => io.sockets.sockets[socketID].leave(room));
+      });
+    }
   });
+
+  //USER'S ROOM JOIN
+  socket.on('clientJoinsRoom', function (room, ackFn) {
+    let info = { 'success': false, 'status': 400, 'about': null };
+    if (!(io.sockets.adapter.rooms[room])) {
+      info.about = 'Error..! Employee Room not found..! :(';
+      ackFn(info);
+    }
+    else {
+      socket.join(room);
+      info.status = 200;
+      info.success = true;
+      info.about = "New User added..!";
+      ackFn(info);
+      console.log("New user added --> " + room);
+    }
+  });
+
+  //USER LEAVES ROOM
+  socket.on('clientLeavesRoom', function (room, ackFn) {
+    socket.leave(room);
+    ackFn({ 'success': true, 'status': 200, 'about': 'A user left..!' });
+  });
+
 });
-*/

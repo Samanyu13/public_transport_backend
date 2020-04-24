@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const methods = require('./../../methods');
 const auth = require('./../../middleware/auth');
+const io = require('socket.io-client');
+const socket = io('http://localhost:3000');
+
 
 //private/employee/startTrip
 router.post('/startTrip', auth.jwtVerifyToken, async function (req, res) {
@@ -33,13 +36,18 @@ router.post('/startTrip', auth.jwtVerifyToken, async function (req, res) {
 
                 let input = [];
                 IDs.forEach(obj => {
-                    input.push({'busstop_id': obj.busstop_id});
+                    input.push({ 'busstop_id': obj.busstop_id });
                 });
 
                 //if getting StopName from IDs succeeds
-                let stop_names = await methods.BusInfo.getStopNamesfromID(input);
+                let stop_names = await methods.BusInfo.getStopNameLocationsfromID(input);
 
                 if (stop_names.success) {
+
+                    socket.emit('employeeCreatesRoom', 'B' + data.busNo, function (data) {
+                        console.log("Employee Side Socket Status: " + JSON.stringify(data));
+                    });
+
                     about.data = stop_names.about;
                     about.comment = "Successfully retrieved data..!";
                     status = 200;
@@ -78,7 +86,7 @@ router.post('/startTrip', auth.jwtVerifyToken, async function (req, res) {
 
     }
     catch (err) {
-        console.log("Route-Error: " + err);
+        console.log(err);
 
         res.json({
             'success': false,
@@ -109,6 +117,10 @@ router.post('/endTrip', auth.jwtVerifyToken, async function (req, res) {
             info.route_no = bus.route_no;
 
             let del = await methods.BusInfo.removeFromLiveAndAddToLog(info);
+
+            socket.emit('tripEnd', 'B' + bus.bus_no, function (data) {
+                console.log("Server sends his regards: " + JSON.stringify(data));
+            });
 
             res.json({
                 'success': del.success,
