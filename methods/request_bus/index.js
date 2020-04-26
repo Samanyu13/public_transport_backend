@@ -377,4 +377,98 @@ RequestBus.getAllConfirmedRoutes = async function () {
         }
     }
 }
+
+/**
+ * Gets the set of all live requested routeIDs of particular User 
+ * with the time-frame
+ */
+RequestBus.liveRequestRouteIDsByUserID = async function (info) {
+    try {
+        let ans = await models.bus_request_details.findAll({
+            attributes: ['route_id', 'time_frame', 'date'],
+            include: {
+                model: models.bus_request_live,
+                required: true,
+                where: {
+                    user_id: info
+                },
+                attributes: []
+
+            }
+        });
+        // console.log("ANS: " + JSON.stringify(ans));
+        return {
+            'about': ans,
+            'status': 200,
+            'success': true
+        }
+    }
+    catch (err) {
+        console.log("Error-Methods-liveRequestRouteIDsByUserID: ");
+        console.log(err);
+        return {
+            'about': err,
+            'status': 500,
+            'success': false
+        }
+    }
+}
+
+/**
+ * Gets the set of all live confirmed routes by Route_IDs
+ */
+RequestBus.getAllConfirmedRoutesByRouteIDs = async function (info) {
+    console.log('info ' + info);
+    try {
+        let ans = await models.request_buses_confirmed.findAll({
+            where: {
+                [Op.or]: info
+            },
+            attributes: ['route_id', 'time_frame', 'date', 'time']
+        });
+        return {
+            'about': ans,
+            'status': 200,
+            'success': true
+        }
+    }
+    catch (err) {
+        console.log("Error-Methods-getAllConfirmedRoutesByRouteIDs: ");
+        console.log(err);
+        return {
+            'about': err,
+            'status': 500,
+            'success': false
+        }
+    }
+}
+
+/**
+ * Gets the set of all live unconfirmed routes by Route_IDs
+ */
+RequestBus.getAllUnConfirmedRoutesByRouteIDs = async function (info) {
+    try {
+        let ans = await models.request_buses_for_verification.findAll({
+            where: {
+                [Op.or]: info
+            },
+            attributes: ['route_id', 'time_frame', 'date']
+        });
+        return {
+            'about': ans,
+            'status': 200,
+            'success': true
+        }
+    }
+    catch (err) {
+        console.log("Error-Methods-getAllUnConfirmedRoutesByRouteIDs: ");
+        console.log(err);
+        return {
+            'about': err,
+            'status': 500,
+            'success': false
+        }
+    }
+}
+
 module.exports = RequestBus;

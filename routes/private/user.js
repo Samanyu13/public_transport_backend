@@ -135,4 +135,172 @@ router.post('/getAllStopsByID', async function (req, res) {
     }
 });
 
+//private/user/getConfirmedByUserID
+router.post('/getConfirmedByUserID', async function (req, res) {
+    try {
+        let uid = req.body.user_id;
+        let ans = await methods.RequestBus.liveRequestRouteIDsByUserID(uid);
+
+        let inp = [];
+        (ans.about).forEach(elem => {
+            console.log(elem);
+            inp.push({
+                'route_id': elem.route_id,
+                'time_frame': elem.time_frame
+            });
+        });
+
+        let result = await methods.RequestBus.getAllConfirmedRoutesByRouteIDs(inp);
+
+        //*****************************To attach route names ***********************
+        let live_data = result.about;
+
+        let arr = [];
+        live_data.forEach(obj => {
+            arr.push({ 'route_id': obj.route_id });
+        });
+        let names = await methods.BusInfo.getRouteNamesByIDs(arr);
+        let r_names = names.about;
+
+        var map = new Map();
+        r_names.forEach(obj => {
+            let data = obj.dataValues;
+            map[data.route_id] = data.route_name;
+        });
+
+        let finalAns = [];
+        live_data.forEach(obj => {
+            let datum = {};
+            datum.time = obj.time;
+            datum.date = obj.date;
+            datum.route_name = map[obj.route_id];
+            finalAns.push(datum);
+        });
+
+
+        res.json({
+            'success': result.success,
+            'about': { 'data': finalAns, 'comment': 'Set of buses confirmed' },
+            'status': result.status
+        });
+    }
+    catch (err) {
+        console.log("Route-Error: " + err);
+
+        res.json({
+            'success': false,
+            'about': { 'data': null, 'comment': err },
+            'status': 500
+        });
+    }
+});
+
+//private/user/getProcessingByUserID
+router.post('/getProcessingByUserID', async function (req, res) {
+    try {
+        let uid = req.body.user_id;
+        let ans = await methods.RequestBus.liveRequestRouteIDsByUserID(uid);
+
+        let inp = [];
+        (ans.about).forEach(elem => {
+            console.log(elem);
+            inp.push({
+                'route_id': elem.route_id,
+                'time_frame': elem.time_frame
+            });
+        });
+
+        let result = await methods.RequestBus.getAllUnConfirmedRoutesByRouteIDs(inp);
+
+        //*****************************To attach route names ***********************
+        let live_data = result.about;
+
+        let arr = [];
+        live_data.forEach(obj => {
+            arr.push({ 'route_id': obj.route_id });
+        });
+        let names = await methods.BusInfo.getRouteNamesByIDs(arr);
+        let r_names = names.about;
+
+        var map = new Map();
+        r_names.forEach(obj => {
+            let data = obj.dataValues;
+            map[data.route_id] = data.route_name;
+        });
+
+        let finalAns = [];
+        live_data.forEach(obj => {
+            let datum = {};
+            datum.time_frame = obj.time_frame;
+            datum.date = obj.date;
+            datum.route_name = map[obj.route_id];
+            finalAns.push(datum);
+        });
+
+
+        res.json({
+            'success': result.success,
+            'about': { 'data': finalAns, 'comment': 'Set of buses submitted for verification' },
+            'status': result.status
+        });
+    }
+    catch (err) {
+        console.log("Route-Error: " + err);
+
+        res.json({
+            'success': false,
+            'about': { 'data': null, 'comment': err },
+            'status': 500
+        });
+    }
+});
+
+//private/user/getNotSumbmittedByUserID
+router.post('/getNotSumbmittedByUserID', async function (req, res) {
+    try {
+        let uid = req.body.user_id;
+        let ans = await methods.RequestBus.liveRequestRouteIDsByUserID(uid);
+        
+        //*****************************To attach route names ***********************
+        let live_data = ans.about;
+
+        let arr = [];
+        live_data.forEach(obj => {
+            arr.push({ 'route_id': obj.route_id });
+        });
+        let names = await methods.BusInfo.getRouteNamesByIDs(arr);
+        let r_names = names.about;
+
+        var map = new Map();
+        r_names.forEach(obj => {
+            let data = obj.dataValues;
+            map[data.route_id] = data.route_name;
+        });
+
+        let finalAns = [];
+        live_data.forEach(obj => {
+            let datum = {};
+            datum.time_frame = obj.time_frame;
+            datum.date = obj.date;
+            datum.route_name = map[obj.route_id];
+            finalAns.push(datum);
+        });
+
+        res.json({
+            'success': ans.success,
+            'about': { 'data': finalAns, 'comment': 'Set of buses requested by user' },
+            'status': ans.status
+        });
+    }
+    catch (err) {
+        console.log("Route-Error: " + err);
+
+        res.json({
+            'success': false,
+            'about': { 'data': null, 'comment': err },
+            'status': 500
+        });
+    }
+});
+
 module.exports = router;

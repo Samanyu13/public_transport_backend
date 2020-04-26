@@ -114,6 +114,39 @@ BusInfo.getStopNameLocationsfromID = async function (req) {
     }
 }
 
+/**
+ * Returns the route names with their route IDs that were
+ * passed onto the function as an array.
+ */
+BusInfo.getRouteNamesByIDs = async function (req) {
+    try {
+        let arr = req;
+
+        let ans = await models.route_master.findAll({
+            where: {
+                [Op.or]: arr
+            },
+            attributes: ['route_name', 'route_id']
+        });
+
+        let data = [];
+        console.log(JSON.stringify(ans));
+
+        return {
+            'about': ans,
+            'status': 200,
+            'success': true
+        };
+    }
+    catch (err) {
+        return {
+            'about': err,
+            'status': 500,
+            'success': false,
+        };
+    }
+}
+
 function sortByProperty(property) {
     return function (a, b) {
         if (a[property] > b[property])

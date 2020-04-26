@@ -97,7 +97,6 @@ router.get('/verification/:id', async function (req, res) {
 
 //private/admin/confirmation
 router.post('/confirmation', async function (req, res) {
-    let flag;
     try {
         let data = {};
         data.time = req.body.time;
@@ -106,11 +105,10 @@ router.post('/confirmation', async function (req, res) {
         data.date = req.body.date;
         let ans = await methods.RequestBus.confirmTrip(data);
 
-        flag = ans.success;
         let path = (ans.success) ? '/private/admin/dashboard' : '/private/admin/toVerify';
 
         if (!ans.success) {
-            path = '/private/admin/confirmation/' + id;
+            path = '/private/admin/confirmation';
             req.session.message = {
                 type: 'danger',
                 intro: 'Confirming Bus Failed..!',
@@ -136,11 +134,6 @@ router.post('/confirmation', async function (req, res) {
             message: err
         };
         res.redirect('/error');
-    }
-    finally {
-        if (flag) {
-            await methods.RequestBus.removeUnconfirmedRouteByID(id);
-        }
     }
 });
 
