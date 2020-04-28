@@ -17,6 +17,7 @@ dependencies:
   sequelize: 5.21.7
   socket.io: 2.3.0
   socket.io-client: 2.3.0
+  sqlite3: 4.2.0
 devDependencies:
   eslint: 6.8.0
 packages:
@@ -1964,6 +1965,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-INOFj37C7k3AfaNTtX8RhsTw7qRy7eLET14cROi9+5HAVbbHuIWUHEauBv5qT4Av2tWasiTY1Jw6puUNqRJXQg==
+  /nan/2.14.1:
+    dev: false
+    resolution:
+      integrity: sha512-isWHgVjnFjh2x2yuJ/tj3JbwoHu3UC2dX5G/88Cm24yB6YopVgxvBObDY7n5xW6ExmFhJpSEQqFPvq9zaXc8Jw==
   /natural-compare/1.4.0:
     dev: true
     resolution:
@@ -2011,6 +2016,22 @@ packages:
       node: '>= 4.5.0'
     resolution:
       integrity: sha512-vFMQIWt+J/7FLNyKouZ9TazT74PRV3wgv9UT4cRjC8BffxFbKXkgIWR42URCPSnHm/QDz6BOlb2Q0U4+VQT67Q==
+  /node-pre-gyp/0.11.0:
+    dependencies:
+      detect-libc: 1.0.3
+      mkdirp: 0.5.5
+      needle: 2.4.1
+      nopt: 4.0.3
+      npm-packlist: 1.4.8
+      npmlog: 4.1.2
+      rc: 1.2.8
+      rimraf: 2.7.1
+      semver: 5.7.1
+      tar: 4.4.13
+    dev: false
+    hasBin: true
+    resolution:
+      integrity: sha512-TwWAOZb0j7e9eGaf9esRx3ZcLaE5tQ2lvYy1pb5IAaG1a2e2Kv5Lms1Y4hpj+ciXJRofIxxlt5haeQ/2ANeE0Q==
   /node-pre-gyp/0.14.0:
     dependencies:
       detect-libc: 1.0.3
@@ -2666,6 +2687,14 @@ packages:
     dev: true
     resolution:
       integrity: sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
+  /sqlite3/4.2.0:
+    dependencies:
+      nan: 2.14.1
+      node-pre-gyp: 0.11.0
+    dev: false
+    requiresBuild: true
+    resolution:
+      integrity: sha512-roEOz41hxui2Q7uYnWsjMOTry6TcNUNmp8audCx18gF10P2NknwdpF+E+HKvz/F2NvPKGGBF4NGc+ZPQ+AABwg==
   /sqlstring/2.3.2:
     dev: false
     engines:
@@ -3128,3 +3157,4 @@ specifiers:
   sequelize: ^5.21.3
   socket.io: ^2.3.0
   socket.io-client: ^2.3.0
+  sqlite3: ^4.2.0
