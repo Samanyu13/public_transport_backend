@@ -44,9 +44,9 @@ router.post('/startTrip', auth.jwtVerifyToken, async function (req, res) {
 
                 if (stop_names.success) {
 
-                    socket.emit('employeeCreatesRoom', 'B' + data.busNo, function (data) {
-                        console.log("Employee Side Socket Status: " + JSON.stringify(data));
-                    });
+                    // socket.emit('employeeCreatesRoom', 'B' + data.busNo, function (data) {
+                    //     console.log("Employee Side Socket Status: " + JSON.stringify(data));
+                    // });
 
                     about.data = stop_names.about;
                     about.comment = "Successfully retrieved data..!";
