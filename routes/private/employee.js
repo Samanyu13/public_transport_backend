@@ -2,13 +2,15 @@ const express = require('express');
 const router = express.Router();
 const methods = require('./../../methods');
 const auth = require('./../../middleware/auth');
+const env = require('./../../config/env.json').env;
 const io = require('socket.io-client');
-const socket = io('http://localhost:3000');
+const socket = io(env);
 
 
 //private/employee/startTrip
 router.post('/startTrip', auth.jwtVerifyToken, async function (req, res) {
     try {
+        console.log(env);
         let data = JSON.stringify(req.body);
         //req.decoded - details
         data = JSON.parse(data);
@@ -44,9 +46,9 @@ router.post('/startTrip', auth.jwtVerifyToken, async function (req, res) {
 
                 if (stop_names.success) {
 
-                    // socket.emit('employeeCreatesRoom', 'B' + data.busNo, function (data) {
-                    //     console.log("Employee Side Socket Status: " + JSON.stringify(data));
-                    // });
+                    socket.emit('employeeCreatesRoom', 'B' + data.routeNo, function (data) {
+                        console.log("Employee Side Socket Status: " + JSON.stringify(data));
+                    });
 
                     about.data = stop_names.about;
                     about.comment = "Successfully retrieved data..!";
@@ -116,9 +118,10 @@ router.post('/endTrip', auth.jwtVerifyToken, async function (req, res) {
             info.employee_code = bus.employee_code;
             info.route_no = bus.route_no;
 
+            console.log(bus.route_no + "SSSS");
             let del = await methods.BusInfo.removeFromLiveAndAddToLog(info);
 
-            socket.emit('tripEnd', 'B' + bus.bus_no, function (data) {
+            socket.emit('tripEnd', 'B' + bus.route_no, function (data) {
                 console.log("Server sends his regards: " + JSON.stringify(data));
             });
 

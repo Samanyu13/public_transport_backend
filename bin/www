@@ -101,32 +101,39 @@ function onListening() {
  * Setting ip socket connection with Node http server. 
  */
 
-var io = require('socket.io')(server);
+let io = require('socket.io')(server);
 
-io.on('connection', function (socket) {
+io.on('connect', function (socket) {
   // console.log("HANDSHAKE: " + JSON.stringify(socket.handshake));
 
   //EMPLOYEE ROOM CREATION
   socket.on('employeeCreatesRoom', function (room, ackFn) {
     let info = { 'success': false, 'status': 500, 'about': null };
     //A room with the same roomInfo exists
+    console.log('Hi Laala: ' + io.sockets.adapter['rooms']);
     if (io.sockets.adapter.rooms[room]) {
-      //Disconnect all the clients on this room
-      io.of('/').in(room).clients((err, socketIDs) => {
-        if (err) {
-          info.about = "Socket ID collection failed..!";
-          ackFn(info);
-          throw err;
-        }
-        socketIDs.forEach(socketID => io.sockets.sockets[socketID].leave(room));
-      });
+      console.log('Room already exists..!');
+      info.about = "Room already up..!";
     }
-    socket.join(room);
+    else {
+      info.about = "New room created..!";
+      socket.join(room);
+    }
     info.status = 200;
     info.success = true;
-    info.about = "New room created..!";
+    console.log(info.about);
+    console.log(io.sockets.adapter["rooms"]);
     ackFn(info);
-    console.log("New room created..!");
+
+
+
+  });
+
+  //EMPLOYEE SENDS DATA
+  socket.on('employeeSendsData', function (data, ackFn) {
+    // let info = { 'success': false, 'status': 500, 'about': null };
+    socket.broadcast.to(data.room).emit('locData', data.data);
+    ackFn('Data Sent..!');
   });
 
   //EMPLOYEE CLOSING THE ROOM ON TRIP-END
@@ -137,6 +144,7 @@ io.on('connection', function (socket) {
       ackFn(info);
     }
     else {
+      console.log('EXISTS');
       //Disconnect all the clients on this room
       io.of('/').in(room).clients((err, socketIDs) => {
         if (err) {
@@ -145,6 +153,8 @@ io.on('connection', function (socket) {
           throw err;
         }
         socketIDs.forEach(socketID => io.sockets.sockets[socketID].leave(room));
+        let info = { 'success': true, 'status': 200, 'about': 'Successfully removed the socket..!' };
+        ackFn(info);
       });
     }
   });
@@ -161,6 +171,7 @@ io.on('connection', function (socket) {
       info.status = 200;
       info.success = true;
       info.about = "New User added..!";
+      console.log(io.sockets.adapter["rooms"]);
       ackFn(info);
       console.log("New user added --> " + room);
     }

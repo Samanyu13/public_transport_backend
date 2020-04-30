@@ -172,14 +172,12 @@ BusInfo.getAllStopsOnTheRoute = async function (req) {
             attributes: ['busstop_id', 'id']
         });
 
-        console.log(allIDs);
         let data = [];
         allIDs.forEach(element => {
             data.push(element.dataValues);
         });
 
         data.sort(sortByProperty("id"));
-        console.log(data);
 
         return {
             'about': data,
@@ -353,7 +351,6 @@ BusInfo.retrieveLiveRouteIDsFromStops = async function (info) {
  */
 BusInfo.retrieveAllRouteIDsFromStops = async function (info) {
     try {
-        console.log(info);
         const query = `
                         SELECT R.route_id, R.route_name 
                         FROM route_masters AS R 
@@ -372,7 +369,6 @@ BusInfo.retrieveAllRouteIDsFromStops = async function (info) {
                 },
                 type: QueryTypes.SELECT
             });
-        console.log(routeIDs)
         return {
             'about': routeIDs,
             'status': 200,
