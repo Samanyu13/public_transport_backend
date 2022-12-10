@@ -14,7 +14,7 @@
     "csv-parser": "^2.3.2",
     "debug": "~2.6.9",
     "ejs": "^3.0.2",
-    "express": "~4.16.1",
+    "express": "~4.17.3",
     "express-flash": "0.0.2",
     "express-session": "^1.17.1",
     "googleapis": "^39.2.0",
